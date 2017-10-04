@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.zcu.fjp.Controller">
    <children>
-      <Button fx:id="compute" layoutX="685.0" layoutY="45.0" mnemonicParsing="false" onAction="#handleComputeButtonAction" prefHeight="25.0" prefWidth="100.0" text="Compute" />
+      <Button fx:id="compute" layoutX="685.0" layoutY="45.0" mnemonicParsing="false" onAction="#handleComputeButtonAction" prefHeight="25.0" prefWidth="100.0" styleClass="primary" text="Compute"/>
       <Button fx:id="clear" layoutX="575.0" layoutY="45.0" mnemonicParsing="false" onAction="#handleClearButtonAction" prefHeight="25.0" prefWidth="100.0" text="Clear" />
       <TextArea fx:id="input" editable="true" layoutX="15.0" layoutY="110.0" prefHeight="475.0" prefWidth="380.0" wrapText="true" />
       <TextArea fx:id="output" editable="false" layoutX="405.0" layoutY="110.0" prefHeight="475.0" prefWidth="380.0" wrapText="true" />

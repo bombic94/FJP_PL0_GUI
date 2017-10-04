@@ -19,7 +19,7 @@ public class MainFrame extends Application {
 			Scene scene = new Scene(root, 800, 600);
 			primaryStage.setResizable(false);
 			primaryStage.setTitle("PL/0 interpreter");
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {

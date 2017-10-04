@@ -68,7 +68,9 @@ public class Controller implements Initializable {
 	@FXML
 	private void handleUploadButtonAction(ActionEvent event){
 		file = fileChooser.showOpenDialog(anchor.getScene().getWindow());
-		inputName.setText(file.getAbsolutePath());
+		if (file != null) {
+			inputName.setText(file.getAbsolutePath());
+		}
 	}
 	
 	/**
@@ -78,7 +80,6 @@ public class Controller implements Initializable {
 	 */
 	@FXML
 	private void handleComputeButtonAction(ActionEvent event){
-		input.setText("");
 		output.setText("");
 		
 		PrintWriter out = null;
@@ -99,16 +100,20 @@ public class Controller implements Initializable {
 				e.printStackTrace();
 			}
 			message = new String(encoded, Charset.defaultCharset());
+			input.setText(message);
 			
 		} else { 
 			message = input.getText();
 		}
 		
 		if (fileCheck.isSelected()){
-			out.print(cipher.toString());
+			out.print(message.toString());
 			out.close();
 		}
+	
 		
+		//implement this part!!
+		output.setText(message);
 	}
 	
 	@FXML
