@@ -15,6 +15,7 @@ public class Stack {
 		this.instructionCount = instructionCount;
 		this.stackItems = stackItems;
 	}
+	
 	public int getBasis() {
 		return basis;
 	}
