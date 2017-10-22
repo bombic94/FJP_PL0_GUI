@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cz.zcu.fjp.model.Instruction?>
+<?import cz.zcu.fjp.model.Stack?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TitledPane fx:id="titledPane" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" text="PL/0 Debugger" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.zcu.fjp.controller.MainController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+         <children>
+            <SplitPane fx:id="splitPane" dividerPositions="0.9" layoutX="202.0" layoutY="102.0" orientation="VERTICAL" prefHeight="374.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <SplitPane dividerPositions="0.4" layoutX="188.0" layoutY="68.0" prefHeight="297.0" prefWidth="577.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <SplitPane dividerPositions="0.5" prefHeight="295.0" prefWidth="284.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                             <children>
+                                                <TitledPane animated="false" layoutX="-26.0" layoutY="14.0" prefHeight="491.0" prefWidth="150.0" text="Actual machine state" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <TreeTableView fx:id="tableStateActual" layoutX="-26.0" layoutY="33.0" prefHeight="465.0" prefWidth="148.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                              <columns>
+                                                                <TreeTableColumn fx:id="col1Index" prefWidth="60.0" text="Index" />
+                                                                <TreeTableColumn fx:id="col1Value" prefWidth="60.0" text="Value" />
+                                                              </columns>
+                                                            </TreeTableView>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </TitledPane>
+                                             </children>
+                                          </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="293.0" prefWidth="126.0">
+                                             <children>
+                                                <TitledPane animated="false" layoutX="-53.0" layoutY="53.0" prefHeight="491.0" prefWidth="149.0" text="Future machine state" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                         <children>
+                                                            <TreeTableView fx:id="tableStateFuture" prefHeight="465.0" prefWidth="147.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                              <columns>
+                                                                <TreeTableColumn fx:id="col2Index" prefWidth="60.0" text="Index" />
+                                                                <TreeTableColumn fx:id="col2Value" prefWidth="60.0" text="Value" />
+                                                              </columns>
+                                                            </TreeTableView>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </TitledPane>
+                                             </children>
+                                          </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <TableView fx:id="tableInstructions" layoutX="131.0" layoutY="99.0" prefHeight="493.0" prefWidth="462.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <columns>
+                                        <TableColumn fx:id="columnIndex" editable="false" prefWidth="75.0" sortable="false" text="Index">
+                                        	<cellValueFactory><PropertyValueFactory property="index" />
+        									</cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnInstruction" editable="false" prefWidth="75.0" sortable="false" text="Instruction">
+                                        	<cellValueFactory><PropertyValueFactory property="instruction" />
+        									</cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnLevel" editable="false" prefWidth="75.0" sortable="false" text="Level">
+                                        	<cellValueFactory><PropertyValueFactory property="level" />
+        									</cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnOperand" editable="false" prefWidth="75.0" sortable="false" text="Operand">
+                                        	<cellValueFactory><PropertyValueFactory property="operand" />
+        									</cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnInfo" editable="false" prefWidth="159.0" sortable="false" text="Debug">
+                                        	<cellValueFactory><PropertyValueFactory property="debug" />
+        									</cellValueFactory>
+                                        </TableColumn>
+                                      </columns>
+                                      <items>
+										    <FXCollections fx:factory="observableArrayList">
+										    	<Instruction debug="Additional info" index="0" instruction="JMP" level="0" operand="6" />
+										    </FXCollections>
+										</items>
+                                    </TableView>
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <Button fx:id="btnForward" layoutX="643.0" layoutY="14.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="25.0" prefWidth="120.0" text="Step forward" />
+                        <Button fx:id="btnBack" layoutX="523.0" layoutY="14.0" mnemonicParsing="false" onAction="#stepBack" prefHeight="25.0" prefWidth="120.0" text="Step back" />
+                        <Button fx:id="btnLoad" defaultButton="true" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadFile" prefHeight="25.0" prefWidth="120.0" text="Load file" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children></AnchorPane>
+  </content>
+</TitledPane>

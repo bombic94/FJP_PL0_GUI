@@ -1,4 +1,4 @@
-package cz.zcu.fjp;
+package cz.zcu.fjp.controller;
 
 import java.io.File;
 import java.io.IOException;

@@ -15,7 +15,7 @@ public class MainFrame extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("root.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("MainPanel.fxml"));
 			Scene scene = new Scene(root, 800, 600);
 			primaryStage.setResizable(false);
 			primaryStage.setTitle("PL/0 interpreter");
