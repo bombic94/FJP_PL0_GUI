@@ -1,12 +1,15 @@
 package cz.zcu.fjp.controller;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.StackItem;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -99,6 +102,13 @@ public class MainController implements Initializable {
     		new Instruction(4, "JMP", 0, 6, "info")
     	);
     	tableInstructions.setItems(instructions);
+    	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {
+    		
+    	    @Override
+    	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction newValue) {
+    	    	actual1.setText(newValue.getIndex() + "");
+    	    }
+    	});
     	
     	final ObservableList<StackItem> stackItems = FXCollections.observableArrayList(
     		new StackItem(0, 7),
@@ -121,12 +131,20 @@ public class MainController implements Initializable {
 
     @FXML
     void stepBack(ActionEvent event) {
-
+    	int oldPosition = tableInstructions.getSelectionModel().getSelectedIndex();
+    	int newPosition = oldPosition - 1;
+    	tableInstructions.requestFocus();
+    	tableInstructions.getSelectionModel().select(newPosition);
+    	tableInstructions.getFocusModel().focus(newPosition);
     }
 
     @FXML
     void stepForward(ActionEvent event) {
-
+    	int oldPosition = tableInstructions.getSelectionModel().getSelectedIndex();
+    	int newPosition = oldPosition + 1;
+    	tableInstructions.requestFocus();
+    	tableInstructions.getSelectionModel().select(newPosition);
+    	tableInstructions.getFocusModel().focus(newPosition);
     }
 
 }
