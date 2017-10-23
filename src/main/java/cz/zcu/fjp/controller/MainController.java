@@ -1,7 +1,6 @@
 package cz.zcu.fjp.controller;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import cz.zcu.fjp.model.Instruction;
@@ -105,8 +104,14 @@ public class MainController implements Initializable {
     	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {
     		
     	    @Override
-    	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction newValue) {
-    	    	actual1.setText(newValue.getIndex() + "");
+    	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
+    	    	if (instructions.size() > actual.getIndex() + 1) {
+    	    		Instruction future = instructions.get(actual.getIndex() + 1);
+    	    		future1.setText(future.getIndex() + "");
+    	    	} else {
+    	    		future1.setText("-");
+    	    	}
+    	    	actual1.setText(actual.getIndex() + "");    	    	
     	    }
     	});
     	
