@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import cz.zcu.fjp.model.Instruction;
+import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -90,15 +91,36 @@ public class MainController implements Initializable {
 
     @FXML
     private Button btnLoad;
+    
+    private PL0Debugger pl0 = PL0Debugger.getInstance();
 
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+    	
     	final ObservableList<Instruction> instructions = FXCollections.observableArrayList(
-    		new Instruction(0, "JMP", 0, 6, "info"),
-    		new Instruction(1, "JMP", 0, 6, "info"),
-    		new Instruction(2, "JMP", 0, 6, "info"),
-    		new Instruction(3, "JMP", 0, 6, "info"),
-    		new Instruction(4, "JMP", 0, 6, "info")
+    		new Instruction(0, "JMP", 0, 18, "info"),
+    		new Instruction(1, "JMP", 0, 11, "info"),
+    		new Instruction(2, "JMP", 0, 3, "info"),
+    		new Instruction(3, "INT", 0, 4, "info"),
+    		new Instruction(4, "LIT", 0, 11, "info"),
+    		new Instruction(5, "STO", 0, 3, "info"),
+    		new Instruction(6, "LIT", 0, 22, "info"),
+    		new Instruction(7, "STO", 1, 3, "info"),
+    		new Instruction(8, "LIT", 0, 33, "info"),
+    		new Instruction(9, "STO", 2, 3, "info"),
+    		new Instruction(10, "RET", 0, 0, "info"),
+    		new Instruction(11, "INT", 0, 4, "info"),
+    		new Instruction(12, "LIT", 0, 10, "info"),
+    		new Instruction(13, "STO", 1, 3, "info"),
+    		new Instruction(14, "LIT", 0, 20, "info"),
+    		new Instruction(15, "STO", 0, 3, "info"),
+    		new Instruction(16, "CAL", 0, 3, "info"),
+    		new Instruction(17, "RET", 0, 0, "info"),
+    		new Instruction(18, "INT", 0, 4, "info"),
+    		new Instruction(19, "LIT", 0, 100, "info"),
+    		new Instruction(20, "STO", 0, 3, "info"),
+    		new Instruction(21, "CAL", 0, 11, "info"),
+    		new Instruction(22, "RET", 0, 0, "info")
     	);
     	tableInstructions.setItems(instructions);
     	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {
@@ -107,11 +129,19 @@ public class MainController implements Initializable {
     	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
     	    	if (instructions.size() > actual.getIndex() + 1) {
     	    		Instruction future = instructions.get(actual.getIndex() + 1);
-    	    		future1.setText(future.getIndex() + "");
+    	    		Stack futureStack = pl0.getFutureStack(future);
+    	    		future1.setText(futureStack.getInstructionCount() + "");
+    	    		future2.setText(futureStack.getBasis() + "");
+    	    		future3.setText(futureStack.getTop() + "");
     	    	} else {
     	    		future1.setText("-");
+    	    		future2.setText("-");
+    	    		future3.setText("-");
     	    	}
-    	    	actual1.setText(actual.getIndex() + "");    	    	
+    	    	Stack actualStack = pl0.getActualStack(actual);
+    	    	actual1.setText(actualStack.getInstructionCount() + "");    
+    	    	actual2.setText(actualStack.getBasis() + "");
+    	    	actual3.setText(actualStack.getTop() + "");
     	    }
     	});
     	
