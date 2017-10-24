@@ -3,6 +3,13 @@ package cz.zcu.fjp.model;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Class representing instruction. List of instructions is shown in program
+ * instruction table.
+ * Contains information about Index, instruction name, level of basis and
+ * operand information.
+ * Additionally can contain debug info.
+ */
 public class Instruction {
 	
 	private SimpleIntegerProperty index = new SimpleIntegerProperty();

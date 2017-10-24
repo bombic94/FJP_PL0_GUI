@@ -2,6 +2,11 @@ package cz.zcu.fjp.model;
 
 import java.util.List;
 
+/**
+ * Class representing Stack information
+ * Contains info about basis, top and instruction count
+ * Also contains info about list of items in stack
+ */
 public class Stack {
 	private int basis;
 	private int top;

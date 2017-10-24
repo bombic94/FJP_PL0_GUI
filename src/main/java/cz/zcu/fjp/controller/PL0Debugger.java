@@ -8,6 +8,10 @@ import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.collections.ObservableList;
 
+/**
+ * Singleton PL0Debugger takes care about main control of PL0 instructions
+ * Sets instruction and stack information
+ */
 public class PL0Debugger {
 
 	private static PL0Debugger instance = null;

@@ -9,6 +9,10 @@ import cz.zcu.fjp.model.Instruction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * Singleton FileReader takes care of reading data from txt file
+ * and parsing them into ObservableList, which is used to fill table
+ */
 public class FileReader {
 
 	private static FileReader instance = null;

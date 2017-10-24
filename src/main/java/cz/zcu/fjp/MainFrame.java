@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 
 /**
  * Main class launches GUI and starts controller
- * @author dbohmann
  */
 public class MainFrame extends Application {
 	

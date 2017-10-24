@@ -2,6 +2,10 @@ package cz.zcu.fjp.model;
 
 import javafx.beans.property.SimpleIntegerProperty;
 
+/**
+ * Class representing one item in list of items in Stack.
+ * Contains info about index and value.
+ */
 public class StackItem {
 
 	private SimpleIntegerProperty index = new SimpleIntegerProperty();

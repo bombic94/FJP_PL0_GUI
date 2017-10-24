@@ -29,28 +29,32 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
+/**
+ * Main controll of UI. Comunicates with FXML and sets new values.
+ * Defines methods reacting to events and actions.
+ */
 public class MainController implements Initializable {
 
     @FXML
     private AnchorPane anchorPane;
     
     @FXML
-    private Label future1;
+    private Label futureInstructionLabel;
 
     @FXML
-    private Label future2;
+    private Label futureBasisLabel;
 
     @FXML
-    private Label future3;
+    private Label futureTopLabel;
     
     @FXML
-    private Label actual1;
+    private Label actualInstructionLabel;
 
     @FXML
-    private Label actual2;
+    private Label actualBasisLabel;
 
     @FXML
-    private Label actual3;
+    private Label actualTopLabel;
 
     @FXML
     private TreeTableView<StackItem> tableStateActual;
@@ -92,7 +96,7 @@ public class MainController implements Initializable {
     private Button btnForward;
 
     @FXML
-    private Button btnBack;
+    private Button btnReset;
 
     @FXML
     private Button btnLoad;
@@ -104,17 +108,36 @@ public class MainController implements Initializable {
     private FileReader fr = FileReader.getInstance();
 
     ObservableList<Instruction> instructions;
+    
+    /**
+     * Initialize GUI. Set default values to lables, init filechooser,
+     * add listener to changed row in table, and init TreeTableView
+     * representing Stack information
+     */
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
     	
+    	//setting new filechooser
     	fileChooser = new FileChooser();
 		fileChooser.setTitle("Choose file to encrypt");
 		fileChooser.getExtensionFilters().addAll(
 		         new ExtensionFilter("Text Files", "*.txt"),
 		         new ExtensionFilter("All Files", "*.*"));
 		
-    	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {
-    		
+		//setting empty labels - no info
+		actualInstructionLabel.setText("-");    
+    	actualBasisLabel.setText("-");
+    	actualTopLabel.setText("-");    	
+		futureInstructionLabel.setText("-");
+		futureBasisLabel.setText("-");
+		futureTopLabel.setText("-");
+		
+		//setting buttons to disabled - no table loaded
+		btnForward.setDisable(true);
+		btnReset.setDisable(true);
+		
+		//listener to change of selected row - needs to set the stack information
+    	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {  		
     	    @Override
     	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
 
@@ -122,21 +145,21 @@ public class MainController implements Initializable {
 	    	    	Stack actualStack = pl0.getActualStack(actual);
 	    	    	Stack futureStack = pl0.getFutureStack(actual);
 	    	    	
-	    	    	actual1.setText(actualStack.getInstructionCount() + "");    
-	    	    	actual2.setText(actualStack.getBasis() + "");
-	    	    	actual3.setText(actualStack.getTop() + "");
+	    	    	actualInstructionLabel.setText(actualStack.getInstructionCount() + "");    
+	    	    	actualBasisLabel.setText(actualStack.getBasis() + "");
+	    	    	actualTopLabel.setText(actualStack.getTop() + "");
 	    	    	
-		    		future1.setText(futureStack.getInstructionCount() + "");
-		    		future2.setText(futureStack.getBasis() + "");
-		    		future3.setText(futureStack.getTop() + "");
+		    		futureInstructionLabel.setText(futureStack.getInstructionCount() + "");
+		    		futureBasisLabel.setText(futureStack.getBasis() + "");
+		    		futureTopLabel.setText(futureStack.getTop() + "");
     	    	} else {	    	    	
-	    	    	actual1.setText("-");    
-	    	    	actual2.setText("-");
-	    	    	actual3.setText("-");
+	    	    	actualInstructionLabel.setText("-");    
+	    	    	actualBasisLabel.setText("-");
+	    	    	actualTopLabel.setText("-");
 	    	    	
-		    		future1.setText("-");
-		    		future2.setText("-");
-		    		future3.setText("-");
+		    		futureInstructionLabel.setText("-");
+		    		futureBasisLabel.setText("-");
+		    		futureTopLabel.setText("-");
     	    	}
     	    }
     	});
@@ -156,6 +179,12 @@ public class MainController implements Initializable {
     	tableStateFuture.setRoot(root);
     	
     }
+    
+    /**
+     * Load file by filechooser, then send to process to table.
+     * If failed, show alert, else initalize table.
+     * @param event
+     */
     @FXML
     void loadFile(ActionEvent event) {
     	file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
@@ -163,16 +192,21 @@ public class MainController implements Initializable {
     	if (instructions != null) {
     		this.reset(event);
     		tableInstructions.setItems(instructions);
+    		btnForward.setDisable(false);
+    		btnReset.setDisable(false);
     	} else {
     		Alert alert = new Alert(AlertType.ERROR);
     		alert.setTitle("Error");
     		alert.setHeaderText("Error has happened during loading file");
     		alert.setContentText("Please check that file is in 'txt' format and contains correct information and only spaces between them.");
-
     		alert.showAndWait();
     	}
     }
 
+    /**
+     * Reset table to first instruction.
+     * @param event
+     */
     @FXML
     void reset(ActionEvent event) {
     	Instruction actual = instructions.get(0);
@@ -182,6 +216,10 @@ public class MainController implements Initializable {
     	tableInstructions.getFocusModel().focus(newPosition);
     }
 
+    /**
+     * Select next row in program instruction table.
+     * @param event
+     */
     @FXML
     void stepForward(ActionEvent event) {
     	Instruction actual = tableInstructions.getSelectionModel().getSelectedItem();
