@@ -6,6 +6,7 @@ import java.util.List;
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
+import javafx.collections.ObservableList;
 
 public class PL0Debugger {
 
@@ -44,4 +45,64 @@ public class PL0Debugger {
 		stackFuture.setTop((instruction.getIndex() * 3) % 2);
 		return stackFuture;
 	}
+	
+	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) {
+			
+		Instruction future = null;
+		if (actual == null) {
+			future = instructions.get(0);
+		} else {
+			System.out.println(actual.toString());
+			switch (actual.getInstruction()) {
+				case "LIT":{
+					future = instructions.get(actual.getIndex() + 1);
+					break;
+				}
+				case "OPR":{
+					future = instructions.get(actual.getIndex() + 1);
+					break;
+				}
+				case "LOD":{
+					future = instructions.get(actual.getIndex() + 1);
+					break;
+				}
+				case "STO":{
+					future = instructions.get(actual.getIndex() + 1);
+					break;
+				}
+				case "CAL":{
+					int futureIdx = actual.getOperand();
+					future = instructions.get(futureIdx);
+					break;
+				}
+				case "INT":{
+					future = instructions.get(actual.getIndex() + 1);
+					break;
+				}
+				case "JMP":{
+					int futureIdx = actual.getOperand();
+					future = instructions.get(futureIdx);			
+					break;	
+				}
+				case "JMC":{
+					int futureIdx = actual.getOperand();
+					if (stackActual.getTop() == 0) {
+						future = instructions.get(futureIdx);
+					} else {
+						future = instructions.get(actual.getIndex() + 1);						
+					}
+					break;
+				}
+				case "RET":{
+					//TODO implement after stack implementation
+					future = instructions.get(0);
+					break;
+				}		
+			}
+		}
+		System.out.println(future.toString());
+		return future;
+		
+	}
+	
 }

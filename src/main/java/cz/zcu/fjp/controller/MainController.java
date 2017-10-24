@@ -94,10 +94,11 @@ public class MainController implements Initializable {
     
     private PL0Debugger pl0 = PL0Debugger.getInstance();
 
+    ObservableList<Instruction> instructions;
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
     	
-    	final ObservableList<Instruction> instructions = FXCollections.observableArrayList(
+    	instructions = FXCollections.observableArrayList(
     		new Instruction(0, "JMP", 0, 18, "info"),
     		new Instruction(1, "JMP", 0, 11, "info"),
     		new Instruction(2, "JMP", 0, 3, "info"),
@@ -127,21 +128,27 @@ public class MainController implements Initializable {
     		
     	    @Override
     	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
-    	    	if (instructions.size() > actual.getIndex() + 1) {
-    	    		Instruction future = instructions.get(actual.getIndex() + 1);
-    	    		Stack futureStack = pl0.getFutureStack(future);
-    	    		future1.setText(futureStack.getInstructionCount() + "");
-    	    		future2.setText(futureStack.getBasis() + "");
-    	    		future3.setText(futureStack.getTop() + "");
-    	    	} else {
-    	    		future1.setText("-");
-    	    		future2.setText("-");
-    	    		future3.setText("-");
-    	    	}
+//    	    	if (instructions.size() > actual.getIndex() + 1) {
+//    	    		Instruction future = instructions.get(actual.getIndex() + 1);
+//    	    		Stack futureStack = pl0.getFutureStack(future);
+//    	    		future1.setText(futureStack.getInstructionCount() + "");
+//    	    		future2.setText(futureStack.getBasis() + "");
+//    	    		future3.setText(futureStack.getTop() + "");
+//    	    	} else {
+//    	    		future1.setText("-");
+//    	    		future2.setText("-");
+//    	    		future3.setText("-");
+//    	    	}
     	    	Stack actualStack = pl0.getActualStack(actual);
+    	    	Stack futureStack = pl0.getFutureStack(actual);
+    	    	
     	    	actual1.setText(actualStack.getInstructionCount() + "");    
     	    	actual2.setText(actualStack.getBasis() + "");
     	    	actual3.setText(actualStack.getTop() + "");
+    	    	
+	    		future1.setText(futureStack.getInstructionCount() + "");
+	    		future2.setText(futureStack.getBasis() + "");
+	    		future3.setText(futureStack.getTop() + "");
     	    }
     	});
     	
@@ -165,9 +172,9 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    void stepBack(ActionEvent event) {
-    	int oldPosition = tableInstructions.getSelectionModel().getSelectedIndex();
-    	int newPosition = oldPosition - 1;
+    void reset(ActionEvent event) {
+    	Instruction actual = instructions.get(0);
+    	int newPosition = actual.getIndex();
     	tableInstructions.requestFocus();
     	tableInstructions.getSelectionModel().select(newPosition);
     	tableInstructions.getFocusModel().focus(newPosition);
@@ -175,8 +182,9 @@ public class MainController implements Initializable {
 
     @FXML
     void stepForward(ActionEvent event) {
-    	int oldPosition = tableInstructions.getSelectionModel().getSelectedIndex();
-    	int newPosition = oldPosition + 1;
+    	Instruction actual = tableInstructions.getSelectionModel().getSelectedItem();
+    	Instruction future = pl0.getFutureInstruction(actual, instructions);
+    	int newPosition = future.getIndex();
     	tableInstructions.requestFocus();
     	tableInstructions.getSelectionModel().select(newPosition);
     	tableInstructions.getFocusModel().focus(newPosition);

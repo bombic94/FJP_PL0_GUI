@@ -149,7 +149,7 @@
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
                   <Button fx:id="btnForward" layoutX="643.0" layoutY="14.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="25.0" prefWidth="120.0" text="Step forward" />
-                  <Button fx:id="btnBack" layoutX="523.0" layoutY="14.0" mnemonicParsing="false" onAction="#stepBack" prefHeight="25.0" prefWidth="120.0" text="Step back" />
+                  <Button fx:id="btnBack" layoutX="523.0" layoutY="14.0" mnemonicParsing="false" onAction="#reset" prefHeight="25.0" prefWidth="120.0" text="Reset" />
                   <Button fx:id="btnLoad" defaultButton="true" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadFile" prefHeight="25.0" prefWidth="120.0" text="Load file" />
                </children>
             </AnchorPane>
