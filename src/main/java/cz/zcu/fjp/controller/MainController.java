@@ -165,23 +165,25 @@ public class MainController implements Initializable {
     @FXML
     void loadFile(ActionEvent event) {
     	file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
-    	instructions = fr.getTable(file);
-    	
-		tableInstructions.getItems().clear();
-    	
-    	if (instructions != null) {
-    		this.reset(event);
-    		tableInstructions.setItems(instructions);
-    		btnForward.setDisable(false);
-    		btnReset.setDisable(false);
-    	} else {
-    		resetStackView();
-    		Alert alert = new Alert(AlertType.ERROR);
-    		alert.setTitle("Error");
-    		alert.setHeaderText("Error has happened during loading file");
-    		alert.setContentText("Please check that file is in 'txt' format and contains correct information and only spaces between them.");
-    		alert.showAndWait(); 		
-    	}  	
+    	if (file != null) {
+	    	instructions = fr.getTable(file);
+	    	
+			tableInstructions.getItems().clear();
+	    	
+	    	if (instructions != null) {
+	    		this.reset(event);
+	    		tableInstructions.setItems(instructions);
+	    		btnForward.setDisable(false);
+	    		btnReset.setDisable(false);
+	    	} else {
+	    		resetStackView();
+	    		Alert alert = new Alert(AlertType.ERROR);
+	    		alert.setTitle("Error");
+	    		alert.setHeaderText("Error has happened during loading file");
+	    		alert.setContentText("Please check that file is in 'txt' format and contains correct information and only spaces between them.");
+	    		alert.showAndWait(); 		
+	    	}
+    	}
     }
 
     /**
@@ -195,6 +197,8 @@ public class MainController implements Initializable {
     	
     	tableInstructions.requestFocus();
     	tableInstructions.getSelectionModel().clearSelection();
+    	
+    	btnForward.setDisable(false);
     }
 
     /**
@@ -205,10 +209,14 @@ public class MainController implements Initializable {
     void stepForward(ActionEvent event) {
     	Instruction actual = tableInstructions.getSelectionModel().getSelectedItem();
     	Instruction future = pl0.getFutureInstruction(actual, instructions);
-    	int newPosition = future.getIndex();
-    	tableInstructions.requestFocus();
-    	tableInstructions.getSelectionModel().select(newPosition);
-    	tableInstructions.getFocusModel().focus(newPosition);
+    	if (future != null) {
+	    	int newPosition = future.getIndex();
+	    	tableInstructions.requestFocus();
+	    	tableInstructions.getSelectionModel().select(newPosition);
+	    	tableInstructions.getFocusModel().focus(newPosition);
+    	} else  {
+    		btnForward.setDisable(true);
+    	}
     }
 
     private void resetStackView() {

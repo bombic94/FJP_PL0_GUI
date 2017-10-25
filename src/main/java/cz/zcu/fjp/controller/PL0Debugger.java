@@ -38,6 +38,10 @@ public class PL0Debugger {
 			}
 			case "OPR":{
 				switch (instruction.getOperand()) {
+					case 0:{ //return
+						//TODO implement level
+						break;
+					}
 					case 1:{ //negate
 						StackItem item = stackItems.remove(stackItems.size() - 1);
 						int returnValue = item.getValue() * (-1);
@@ -128,6 +132,7 @@ public class PL0Debugger {
 						break;
 					}
 				}
+				break;
 			}
 			case "LOD":{
 				//TODO implement level
@@ -144,6 +149,7 @@ public class PL0Debugger {
 				break;
 			}
 			case "CAL":{
+				//TODO implement level
 				TreeItem<StackItem> level = new TreeItem<StackItem>(stackItems.get(stackItems.size() - 1));
 				level.setExpanded(true);
 				stackItems.set(stackItems.size() - 1, level.getValue());
@@ -163,9 +169,10 @@ public class PL0Debugger {
 				break;
 			}
 			case "RET":{
-				stackActual.setBase(0);
-				stackItems = FXCollections.observableArrayList();
-				
+				//TODO implement level
+				//stackActual.setBase(0);
+				//stackItems = FXCollections.observableArrayList();
+				break;
 			}		
 		}
 		stackActual.setStackItems(stackItems);
@@ -195,52 +202,51 @@ public class PL0Debugger {
 			System.out.println(actual.toString());
 			switch (actual.getInstruction()) {
 				case "LIT":{
-					future = instructions.get(actual.getIndex() + 1);
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					break;
 				}
 				case "OPR":{
-					future = instructions.get(actual.getIndex() + 1);
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					break;
 				}
 				case "LOD":{
-					future = instructions.get(actual.getIndex() + 1);
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					break;
 				}
 				case "STO":{
-					future = instructions.get(actual.getIndex() + 1);
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					break;
 				}
 				case "CAL":{
-					int futureIdx = actual.getOperand();
-					future = instructions.get(futureIdx);
+					future = tryGetInstruction(actual.getOperand(), instructions);
 					break;
 				}
 				case "INT":{
-					future = instructions.get(actual.getIndex() + 1);
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					break;
 				}
 				case "JMP":{
 					int futureIdx = actual.getOperand();
-					future = instructions.get(futureIdx);			
+					future = tryGetInstruction(futureIdx, instructions);			
 					break;	
 				}
 				case "JMC":{
 					int futureIdx = actual.getOperand();
 					if (stackActual.getTop() == 0) {
-						future = instructions.get(futureIdx);
+						future = tryGetInstruction(futureIdx, instructions);
 					} else {
-						future = instructions.get(actual.getIndex() + 1);						
+						future = tryGetInstruction(actual.getIndex() + 1, instructions);						
 					}
 					break;
 				}
 				case "RET":{
 					//TODO implement after stack implementation
-					future = instructions.get(0);
+					future = tryGetInstruction(0, instructions);
 					break;
 				}		
 			}
 		}
-		System.out.println(future.toString());
+		
 		return future;
 		
 	}
@@ -248,6 +254,17 @@ public class PL0Debugger {
 	public void nullStacks() {
 		stackActual = new Stack();
 		stackFuture = new Stack();
+	}
+	
+	public Instruction tryGetInstruction(int index, ObservableList<Instruction> instructions) {
+		Instruction instruction = null;
+		try {
+			instruction = instructions.get(index);
+			System.out.println(instruction.toString());
+		} catch (Exception e) {
+			// do nothing, return null
+		}
+		return instruction;
 	}
 	
 }
