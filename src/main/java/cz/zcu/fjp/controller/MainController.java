@@ -41,7 +41,7 @@ public class MainController implements Initializable {
     private Label futureInstructionLabel;
 
     @FXML
-    private Label futureBasisLabel;
+    private Label futureBaseLabel;
 
     @FXML
     private Label futureTopLabel;
@@ -50,7 +50,7 @@ public class MainController implements Initializable {
     private Label actualInstructionLabel;
 
     @FXML
-    private Label actualBasisLabel;
+    private Label actualBaseLabel;
 
     @FXML
     private Label actualTopLabel;
@@ -127,10 +127,10 @@ public class MainController implements Initializable {
 		
 		//setting empty labels - no info
 		actualInstructionLabel.setText("-");    
-    	actualBasisLabel.setText("-");
+    	actualBaseLabel.setText("-");
     	actualTopLabel.setText("-");    	
 		futureInstructionLabel.setText("-");
-		futureBasisLabel.setText("-");
+		futureBaseLabel.setText("-");
 		futureTopLabel.setText("-");
 		
 		//setting buttons to disabled - no table loaded
@@ -146,20 +146,20 @@ public class MainController implements Initializable {
 	    	    	actualStack = pl0.getActualStack(actual);
 	    	    	futureStack = pl0.getFutureStack(actual);
 	    	    	System.out.println(actualStack.toString());
-	    	    	actualInstructionLabel.setText(actualStack.getInstructionCount() + "");    
-	    	    	actualBasisLabel.setText(actualStack.getBasis() + "");
+	    	    	actualInstructionLabel.setText(actualStack.getProgramCounter() + "");    
+	    	    	actualBaseLabel.setText(actualStack.getBase() + "");
 	    	    	actualTopLabel.setText(actualStack.getTop() + "");
 	    	    	
-		    		futureInstructionLabel.setText(futureStack.getInstructionCount() + "");
-		    		futureBasisLabel.setText(futureStack.getBasis() + "");
+		    		futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
+		    		futureBaseLabel.setText(futureStack.getBase() + "");
 		    		futureTopLabel.setText(futureStack.getTop() + "");
     	    	} else {	    	    	
 	    	    	actualInstructionLabel.setText("-");    
-	    	    	actualBasisLabel.setText("-");
+	    	    	actualBaseLabel.setText("-");
 	    	    	actualTopLabel.setText("-");
 	    	    	
 		    		futureInstructionLabel.setText("-");
-		    		futureBasisLabel.setText("-");
+		    		futureBaseLabel.setText("-");
 		    		futureTopLabel.setText("-");
     	    	}
     	    	

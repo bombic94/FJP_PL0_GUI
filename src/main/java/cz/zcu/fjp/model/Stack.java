@@ -12,17 +12,17 @@ import javafx.scene.control.TreeItem;
  * Also contains info about list of items in stack
  */
 public class Stack {
-	private SimpleIntegerProperty basis = new SimpleIntegerProperty();
+	private SimpleIntegerProperty base = new SimpleIntegerProperty();
 	private SimpleIntegerProperty top = new SimpleIntegerProperty();
-	private SimpleIntegerProperty instructionCount = new SimpleIntegerProperty();
+	private SimpleIntegerProperty programCounter = new SimpleIntegerProperty();
 	private List<StackItem> stackItems;
 	private TreeItem<StackItem> root;
 	
-	public Stack(int basis, int top, int instructionCount, List<StackItem> stackItems, TreeItem<StackItem> root) {
+	public Stack(int base, int top, int instructionCount, List<StackItem> stackItems, TreeItem<StackItem> root) {
 		super();
-		setBasis(basis);
+		setBase(base);
 		setTop(top);
-		setInstructionCount(instructionCount);
+		setProgramCounter(instructionCount);
 		setStackItems(stackItems);
 		setRoot(root);
 	}
@@ -31,11 +31,11 @@ public class Stack {
 		this(0, 0, 0, new ArrayList<StackItem>(), new TreeItem<StackItem>(new StackItem(-1, -1)));
 	}
 
-	public int getBasis() {
-		return basis.get();
+	public int getBase() {
+		return base.get();
 	}
-	public void setBasis(int basis) {
-		this.basis.set(basis);
+	public void setBase(int base) {
+		this.base.set(base);
 	}
 	public int getTop() {
 		return top.get();
@@ -43,11 +43,11 @@ public class Stack {
 	public void setTop(int top) {
 		this.top.set(top);
 	}
-	public int getInstructionCount() {
-		return instructionCount.get();
+	public int getProgramCounter() {
+		return programCounter.get();
 	}
-	public void setInstructionCount(int instructionCount) {
-		this.instructionCount.set(instructionCount);
+	public void setProgramCounter(int instructionCount) {
+		this.programCounter.set(instructionCount);
 	}
 	public List<StackItem> getStackItems() {
 		return stackItems;
@@ -65,9 +65,9 @@ public class Stack {
 	@Override
 	public String toString() {
 		return new StringBuilder("Stack: ")
-				.append("Basis - ").append(getBasis())
-				.append("Top - ").append(getTop())
-				.append("InstructionCount - ").append(getInstructionCount())
+				.append("Program counter - ").append(getProgramCounter())
+				.append("Base - ").append(getBase())
+				.append("Top stack register - ").append(getTop())
 				.append("StackItems - ").append(getStackItems().toString())
 				.append("Root - ").append(getRoot().toString())
 				.toString();	
