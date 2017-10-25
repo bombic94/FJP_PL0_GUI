@@ -125,13 +125,7 @@ public class MainController implements Initializable {
 		         new ExtensionFilter("Text Files", "*.txt"),
 		         new ExtensionFilter("All Files", "*.*"));
 		
-		//setting empty labels - no info
-		actualInstructionLabel.setText("-");    
-    	actualBaseLabel.setText("-");
-    	actualTopLabel.setText("-");    	
-		futureInstructionLabel.setText("-");
-		futureBaseLabel.setText("-");
-		futureTopLabel.setText("-");
+		resetStackView();	
 		
 		//setting buttons to disabled - no table loaded
 		btnForward.setDisable(true);
@@ -141,8 +135,7 @@ public class MainController implements Initializable {
     	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {  		
     	    @Override
     	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
-
-    	    	if (actual != null) {
+    	    	if (actual != null) {    	    		
 	    	    	actualStack = pl0.getActualStack(actual);
 	    	    	futureStack = pl0.getFutureStack(actual);
 	    	    	System.out.println(actualStack.toString());
@@ -153,27 +146,18 @@ public class MainController implements Initializable {
 		    		futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
 		    		futureBaseLabel.setText(futureStack.getBase() + "");
 		    		futureTopLabel.setText(futureStack.getTop() + "");
+		    		
+		    		tableStateActual.setRoot(actualStack.getRoot());
+	       	    	
+		    	    tableStateFuture.setRoot(futureStack.getRoot());
     	    	} else {	    	    	
-	    	    	actualInstructionLabel.setText("-");    
-	    	    	actualBaseLabel.setText("-");
-	    	    	actualTopLabel.setText("-");
-	    	    	
-		    		futureInstructionLabel.setText("-");
-		    		futureBaseLabel.setText("-");
-		    		futureTopLabel.setText("-");
-    	    	}
-    	    		    	
-    	    tableStateActual.setRoot(actualStack.getRoot());
-    	       	    	
-    	    tableStateFuture.setRoot(futureStack.getRoot());
+	    	    	resetStackView();
+    	    	}	    
     	    }
-    	});
-    	
-    	
-    	
+    	}); 	
     }
-    
-    /**
+
+	/**
      * Load file by filechooser, then send to process to table.
      * If failed, show alert, else initalize table.
      * @param event
@@ -182,18 +166,22 @@ public class MainController implements Initializable {
     void loadFile(ActionEvent event) {
     	file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
     	instructions = fr.getTable(file);
+    	
+		tableInstructions.getItems().clear();
+    	
     	if (instructions != null) {
     		this.reset(event);
     		tableInstructions.setItems(instructions);
     		btnForward.setDisable(false);
     		btnReset.setDisable(false);
     	} else {
+    		resetStackView();
     		Alert alert = new Alert(AlertType.ERROR);
     		alert.setTitle("Error");
     		alert.setHeaderText("Error has happened during loading file");
     		alert.setContentText("Please check that file is in 'txt' format and contains correct information and only spaces between them.");
-    		alert.showAndWait();
-    	}
+    		alert.showAndWait(); 		
+    	}  	
     }
 
     /**
@@ -202,11 +190,11 @@ public class MainController implements Initializable {
      */
     @FXML
     void reset(ActionEvent event) {
-    	Instruction actual = instructions.get(0);
-    	int newPosition = actual.getIndex();
+    	resetStackView();
+    	tableInstructions.setItems(instructions);
+    	
     	tableInstructions.requestFocus();
-    	tableInstructions.getSelectionModel().select(newPosition);
-    	tableInstructions.getFocusModel().focus(newPosition);
+    	tableInstructions.getSelectionModel().clearSelection();
     }
 
     /**
@@ -223,4 +211,16 @@ public class MainController implements Initializable {
     	tableInstructions.getFocusModel().focus(newPosition);
     }
 
+    private void resetStackView() {
+		actualInstructionLabel.setText("-");    
+    	actualBaseLabel.setText("-");
+    	actualTopLabel.setText("-");    	
+		futureInstructionLabel.setText("-");
+		futureBaseLabel.setText("-");
+		futureTopLabel.setText("-");
+		tableStateActual.setRoot(null);
+		tableStateFuture.setRoot(null);
+
+		pl0.nullStacks();
+	}
 }

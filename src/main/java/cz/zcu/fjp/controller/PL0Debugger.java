@@ -34,26 +34,33 @@ public class PL0Debugger {
 		switch (instruction.getInstruction()) {
 			case "LIT":{
 				stackItems.add(new StackItem(stackItems.size() + 1, instruction.getOperand()));
-				stackActual.setStackItems(stackItems);
-				stackActual.setTop(instruction.getOperand());			
+				stackActual.setStackItems(stackItems);			
 				break;
 			}
 			case "OPR":{
 				break;
 			}
 			case "LOD":{
-				break;
+				//TODO implement level
+				StackItem item = stackItems.get(instruction.getOperand());
+				item.setIndex(stackItems.size() + 1);
+				stackItems.add(item);
 			}
 			case "STO":{
+				//TODO implement level
 				StackItem item = stackItems.remove(stackItems.size() - 1);
 				item.setIndex(instruction.getOperand());
-				stackItems.set(instruction.getOperand() -1, item);
+				stackItems.set(instruction.getOperand(), item);
 			}
 			case "CAL":{
+				TreeItem<StackItem> level = new TreeItem<StackItem>(stackItems.get(stackItems.size() - 1));
+				level.setExpanded(true);
+				stackItems.set(stackItems.size() - 1, level.getValue());
 				break;
 			}
 			case "INT":{
-				for (int i = 0; i < instruction.getOperand(); i++) {
+				int size = stackItems.size();
+				for (int i = size; i < size + instruction.getOperand(); i++) {
 					stackItems.add(new StackItem(i + 1, 0));
 				}
 				stackActual.setStackItems(stackItems);
@@ -66,12 +73,15 @@ public class PL0Debugger {
 				break;
 			}
 			case "RET":{
-				break;
+				stackActual.setBase(0);
+				stackItems = FXCollections.observableArrayList();
+				
 			}		
 		}
 
 		stackActual.setProgramCounter(instruction.getIndex());
-				
+		stackActual.setTop(stackItems.size());
+		
 		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
 		root.setExpanded(true);
 		stackActual.getStackItems().stream().forEach((stackItem) -> {
@@ -143,6 +153,11 @@ public class PL0Debugger {
 		System.out.println(future.toString());
 		return future;
 		
+	}
+
+	public void nullStacks() {
+		stackActual = new Stack();
+		stackFuture = new Stack();
 	}
 	
 }
