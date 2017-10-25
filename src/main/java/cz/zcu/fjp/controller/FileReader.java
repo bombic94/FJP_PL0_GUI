@@ -40,6 +40,7 @@ public class FileReader {
 			            i.setInstruction(details[1]);
 			            i.setLevel(Integer.parseInt(details[2]));
 			            i.setOperand(Integer.parseInt(details[3]));
+			            i.setDebug(createDebug(i.getInstruction()));
 			            return i;
 			        })
 			        .collect(Collectors.toList());
@@ -50,5 +51,48 @@ public class FileReader {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private String createDebug(String instruction) {
+		String debug = "";
+		switch (instruction) {
+			case "LIT":{
+				debug = "save constant to stack";
+				break;
+			}
+			case "OPR":{
+				debug = "execute given instruction (see list of instructions)";
+				break;
+			}
+			case "LOD":{
+				debug = "save variable to top of stack";
+				break;
+			}
+			case "STO":{
+				debug = "write variable from top of stack";
+				break;
+			}
+			case "CAL":{
+				debug = "call procedure from given level";
+				break;
+			}
+			case "INT":{
+				debug = "increment value of top of stack by given value";
+				break;
+			}
+			case "JMP":{
+				debug = "jump to given address";		
+				break;	
+			}
+			case "JMC":{
+				debug = "jump to given address, if top of stack == 0";
+				break;
+			}
+			case "RET":{
+				debug = "return from procedure";
+				break;
+			}	
+		}
+		return debug;
 	}
 }

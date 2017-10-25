@@ -1,5 +1,6 @@
 package cz.zcu.fjp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +22,10 @@ public class Stack {
 		this.stackItems = stackItems;
 	}
 	
+	public Stack() {
+		this(0, 0, 0, new ArrayList<StackItem>());
+	}
+
 	public int getBasis() {
 		return basis;
 	}

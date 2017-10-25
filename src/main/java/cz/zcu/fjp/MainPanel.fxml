@@ -38,12 +38,12 @@
                                                    <children>
                                                       <TreeTableView fx:id="tableStateActual" layoutX="17.6" layoutY="46.6" prefHeight="505.0" prefWidth="152.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <columns>
-                                                          <TreeTableColumn fx:id="col1Index" editable="false" prefWidth="60.0" sortable="false" text="Index">
+                                                          <TreeTableColumn fx:id="col1Index" editable="false" prefWidth="90.0" sortable="false" text="Index">
                                                          		<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="index" />
   															</cellValueFactory>
   														</TreeTableColumn>
-                                                          <TreeTableColumn fx:id="col1Value" editable="false" prefWidth="60.0" sortable="false" text="Value">
+                                                          <TreeTableColumn fx:id="col1Value" editable="false" prefWidth="50.0" sortable="false" text="Value">
                                                           	<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="value" />
   															</cellValueFactory>
@@ -73,12 +73,12 @@
                                                    <children>
                                                       <TreeTableView fx:id="tableStateFuture" prefHeight="465.0" prefWidth="147.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <columns>
-                                                          <TreeTableColumn fx:id="col2Index" editable="false" prefWidth="60.0" sortable="false" text="Index">
+                                                          <TreeTableColumn fx:id="col2Index" editable="false" prefWidth="90.0" sortable="false" text="Index">
                                                          		<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="index" />
   															</cellValueFactory>
   														</TreeTableColumn>
-                                                          <TreeTableColumn fx:id="col2Value" editable="false" prefWidth="60.0" sortable="false" text="Value">
+                                                          <TreeTableColumn fx:id="col2Value" editable="false" prefWidth="50.0" sortable="false" text="Value">
                                                           	<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="value" />
   															</cellValueFactory>
@@ -128,7 +128,7 @@
                                           <PropertyValueFactory property="operand" />
   									</cellValueFactory>
                                   </TableColumn>
-                                  <TableColumn fx:id="columnInfo" editable="false" prefWidth="159.0" sortable="false" text="Debug">
+                                  <TableColumn fx:id="columnInfo" editable="false" prefWidth="162.0" sortable="false" text="Debug">
                                   	<cellValueFactory>
                                           <PropertyValueFactory property="debug" />
   									</cellValueFactory>

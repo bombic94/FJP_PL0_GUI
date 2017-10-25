@@ -6,6 +6,7 @@ import java.util.List;
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -16,8 +17,8 @@ public class PL0Debugger {
 
 	private static PL0Debugger instance = null;
 	
-	private Stack stackActual;
-	private Stack stackFuture;
+	private Stack stackActual = new Stack();
+	private Stack stackFuture = new Stack();
 	
 	protected PL0Debugger() {
 		
@@ -31,19 +32,17 @@ public class PL0Debugger {
 	}
 	
 	public Stack getActualStack(Instruction instruction) {
-		List<StackItem> list =  new ArrayList<StackItem>();
-		
-		stackActual = new Stack(0, 0, 0, list);
+		List<StackItem> items = new ArrayList<StackItem>();
+		ObservableList<StackItem> stackItems = FXCollections.observableArrayList(items);
 		stackActual.setInstructionCount(instruction.getIndex());
 		stackActual.setBasis(instruction.getIndex() * 2);
 		stackActual.setTop((instruction.getIndex() * 3) % 2);
+		stackActual.setStackItems(stackItems);
 		return stackActual;
 	}
 	
 	public Stack getFutureStack(Instruction instruction) {
-		List<StackItem> list =  new ArrayList<StackItem>();
 		
-		stackFuture = new Stack(0, 0, 0, list);
 		stackFuture.setInstructionCount(instruction.getIndex());
 		stackFuture.setBasis(instruction.getIndex() * 2);
 		stackFuture.setTop((instruction.getIndex() * 3) % 2);
