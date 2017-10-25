@@ -1,13 +1,11 @@
 package cz.zcu.fjp.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TreeItem;
 
 /**
  * Singleton PL0Debugger takes care about main control of PL0 instructions
@@ -32,20 +30,34 @@ public class PL0Debugger {
 	}
 	
 	public Stack getActualStack(Instruction instruction) {
-		List<StackItem> items = new ArrayList<StackItem>();
-		ObservableList<StackItem> stackItems = FXCollections.observableArrayList(items);
+		ObservableList<StackItem> stackItems = FXCollections.observableArrayList(new StackItem(), new StackItem());
+		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
+		root.setExpanded(true);
+    	stackItems.stream().forEach((stackItem) -> {
+            root.getChildren().add(new TreeItem<>(stackItem));
+        });
+    	
 		stackActual.setInstructionCount(instruction.getIndex());
 		stackActual.setBasis(instruction.getIndex() * 2);
 		stackActual.setTop((instruction.getIndex() * 3) % 2);
 		stackActual.setStackItems(stackItems);
+		stackActual.setRoot(root);
 		return stackActual;
 	}
 	
 	public Stack getFutureStack(Instruction instruction) {
-		
+		ObservableList<StackItem> stackItems = FXCollections.observableArrayList(new StackItem(2,3), new StackItem(4, 5));
+		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
+		root.setExpanded(true);
+    	stackItems.stream().forEach((stackItem) -> {
+            root.getChildren().add(new TreeItem<>(stackItem));
+        });
+    	
 		stackFuture.setInstructionCount(instruction.getIndex());
 		stackFuture.setBasis(instruction.getIndex() * 2);
 		stackFuture.setTop((instruction.getIndex() * 3) % 2);
+		stackFuture.setStackItems(stackItems);
+		stackFuture.setRoot(root);
 		return stackFuture;
 	}
 	

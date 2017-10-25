@@ -17,6 +17,10 @@ public class StackItem {
 		setValue(value);
 	}
 	
+	public StackItem() {
+		this(0, 0);
+	}
+	
 	public int getIndex() {
 		return index.get();
 	}
@@ -32,7 +36,7 @@ public class StackItem {
 	
 	@Override
 	public String toString() {
-		return new StringBuilder("Instruction: ")
+		return new StringBuilder("StackItem: ")
 				.append("Index - ").append(getIndex())
 				.append("Value - ").append(getValue())
 				.toString();	

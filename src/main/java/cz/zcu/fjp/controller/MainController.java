@@ -11,7 +11,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,6 +105,8 @@ public class MainController implements Initializable {
 	private FileChooser fileChooser;
     private PL0Debugger pl0 = PL0Debugger.getInstance();
     private FileReader fr = FileReader.getInstance();
+    private Stack actualStack;
+    private Stack futureStack;
 
     ObservableList<Instruction> instructions;
     
@@ -142,9 +143,9 @@ public class MainController implements Initializable {
     	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
 
     	    	if (actual != null) {
-	    	    	Stack actualStack = pl0.getActualStack(actual);
-	    	    	Stack futureStack = pl0.getFutureStack(actual);
-	    	    	
+	    	    	actualStack = pl0.getActualStack(actual);
+	    	    	futureStack = pl0.getFutureStack(actual);
+	    	    	System.out.println(actualStack.toString());
 	    	    	actualInstructionLabel.setText(actualStack.getInstructionCount() + "");    
 	    	    	actualBasisLabel.setText(actualStack.getBasis() + "");
 	    	    	actualTopLabel.setText(actualStack.getTop() + "");
@@ -161,22 +162,16 @@ public class MainController implements Initializable {
 		    		futureBasisLabel.setText("-");
 		    		futureTopLabel.setText("-");
     	    	}
+    	    	
+    	    TreeItem<StackItem> actualRoot = actualStack.getRoot();    	    	
+    	    tableStateActual.setRoot(actualRoot);
+    	    
+    	    TreeItem<StackItem> futureRoot = futureStack.getRoot();    	    	
+    	    tableStateFuture.setRoot(futureRoot);
     	    }
     	});
     	
-    	//TODO implement treetableview
-    	final ObservableList<StackItem> stackItems = FXCollections.observableArrayList(
-    		new StackItem(0, 7),
-    		new StackItem(1, 5),
-    		new StackItem(2, 4)
-    	);
-    	TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
-    	root.setExpanded(true);
-    	stackItems.stream().forEach((stackItem) -> {
-            root.getChildren().add(new TreeItem<>(stackItem));
-        });
-    	tableStateActual.setRoot(root);
-    	tableStateFuture.setRoot(root);
+    	
     	
     }
     
