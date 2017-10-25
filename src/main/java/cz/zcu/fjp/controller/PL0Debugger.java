@@ -30,20 +30,55 @@ public class PL0Debugger {
 	}
 	
 	public Stack getActualStack(Instruction instruction) {
-		ObservableList<StackItem> stackItems = FXCollections.observableArrayList(new StackItem(), new StackItem());
-		
-		
+		ObservableList<StackItem> stackItems = stackActual.getStackItems();
+		switch (instruction.getInstruction()) {
+			case "LIT":{
+				stackItems.add(new StackItem(stackItems.size() + 1, instruction.getOperand()));
+				stackActual.setStackItems(stackItems);
+				stackActual.setTop(instruction.getOperand());			
+				break;
+			}
+			case "OPR":{
+				break;
+			}
+			case "LOD":{
+				break;
+			}
+			case "STO":{
+				StackItem item = stackItems.remove(stackItems.size() - 1);
+				item.setIndex(instruction.getOperand());
+				stackItems.set(instruction.getOperand() -1, item);
+			}
+			case "CAL":{
+				break;
+			}
+			case "INT":{
+				for (int i = 0; i < instruction.getOperand(); i++) {
+					stackItems.add(new StackItem(i + 1, 0));
+				}
+				stackActual.setStackItems(stackItems);
+				break;
+			}
+			case "JMP":{		
+				break;	
+			}
+			case "JMC":{
+				break;
+			}
+			case "RET":{
+				break;
+			}		
+		}
+
+		stackActual.setProgramCounter(instruction.getIndex());
+				
 		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
 		root.setExpanded(true);
-    	stackItems.stream().forEach((stackItem) -> {
+		stackActual.getStackItems().stream().forEach((stackItem) -> {
             root.getChildren().add(new TreeItem<>(stackItem));
-        });
-    	
-		stackActual.setProgramCounter(instruction.getIndex());
-		stackActual.setBase(instruction.getIndex() * 2);
-		stackActual.setTop((instruction.getIndex() * 3) % 2);
-		stackActual.setStackItems(stackItems);
+        });   	
 		stackActual.setRoot(root);
+		
 		return stackActual;
 	}
 	

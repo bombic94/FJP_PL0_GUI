@@ -1,9 +1,8 @@
 package cz.zcu.fjp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -15,10 +14,10 @@ public class Stack {
 	private SimpleIntegerProperty base = new SimpleIntegerProperty();
 	private SimpleIntegerProperty top = new SimpleIntegerProperty();
 	private SimpleIntegerProperty programCounter = new SimpleIntegerProperty();
-	private List<StackItem> stackItems;
+	private ObservableList<StackItem> stackItems;
 	private TreeItem<StackItem> root;
 	
-	public Stack(int base, int top, int instructionCount, List<StackItem> stackItems, TreeItem<StackItem> root) {
+	public Stack(int base, int top, int instructionCount, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
 		super();
 		setBase(base);
 		setTop(top);
@@ -28,7 +27,7 @@ public class Stack {
 	}
 	
 	public Stack() {
-		this(0, 0, 0, new ArrayList<StackItem>(), new TreeItem<StackItem>(new StackItem(-1, -1)));
+		this(0, 0, 0, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
 	}
 
 	public int getBase() {
@@ -49,10 +48,10 @@ public class Stack {
 	public void setProgramCounter(int instructionCount) {
 		this.programCounter.set(instructionCount);
 	}
-	public List<StackItem> getStackItems() {
+	public ObservableList<StackItem> getStackItems() {
 		return stackItems;
 	}
-	public void setStackItems(List<StackItem> stackItems) {
+	public void setStackItems(ObservableList<StackItem> stackItems) {
 		this.stackItems = stackItems;
 	}
 	public TreeItem<StackItem> getRoot() {

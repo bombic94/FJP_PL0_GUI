@@ -162,12 +162,10 @@ public class MainController implements Initializable {
 		    		futureBaseLabel.setText("-");
 		    		futureTopLabel.setText("-");
     	    	}
-    	    	
-    	    TreeItem<StackItem> actualRoot = actualStack.getRoot();    	    	
-    	    tableStateActual.setRoot(actualRoot);
-    	    
-    	    TreeItem<StackItem> futureRoot = futureStack.getRoot();    	    	
-    	    tableStateFuture.setRoot(futureRoot);
+    	    		    	
+    	    tableStateActual.setRoot(actualStack.getRoot());
+    	       	    	
+    	    tableStateFuture.setRoot(futureStack.getRoot());
     	    }
     	});
     	
