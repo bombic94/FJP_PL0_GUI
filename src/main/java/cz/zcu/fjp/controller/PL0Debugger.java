@@ -34,23 +34,114 @@ public class PL0Debugger {
 		switch (instruction.getInstruction()) {
 			case "LIT":{
 				stackItems.add(new StackItem(stackItems.size() + 1, instruction.getOperand()));
-				stackActual.setStackItems(stackItems);			
 				break;
 			}
 			case "OPR":{
-				break;
+				switch (instruction.getOperand()) {
+					case 1:{ //negate
+						StackItem item = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item.getValue() * (-1);
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 2:{ //sum
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item1.getValue() + item2.getValue();
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 3:{ //substract
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item1.getValue() - item2.getValue();
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 4:{ //multiply
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item1.getValue() * item2.getValue();
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 5:{ //divide
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item1.getValue() / item2.getValue();
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 6:{ //modulo
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item1.getValue() % item2.getValue();
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 7:{//odd?
+						StackItem item = stackItems.remove(stackItems.size() - 1);
+						int returnValue = item.getValue() % 2;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 8:{ //equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = (item1.getValue() == item2.getValue()) ? 1 : 0;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 9:{ //not equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = (item1.getValue() != item2.getValue()) ? 1 : 0;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 10:{ //less than
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = (item1.getValue() < item2.getValue()) ? 1 : 0;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 11:{ //greater than or equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = (item1.getValue() >= item2.getValue()) ? 1 : 0;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 12:{ //greater than
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = (item1.getValue() > item2.getValue()) ? 1 : 0;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+					case 13:{ //less than or equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1);
+						StackItem item1 = stackItems.remove(stackItems.size() - 1);
+						int returnValue = (item1.getValue() <= item2.getValue()) ? 1 : 0;
+						stackItems.add(new StackItem(stackItems.size() + 1, returnValue));
+						break;
+					}
+				}
 			}
 			case "LOD":{
 				//TODO implement level
 				StackItem item = stackItems.get(instruction.getOperand());
 				item.setIndex(stackItems.size() + 1);
 				stackItems.add(item);
+				break;
 			}
 			case "STO":{
 				//TODO implement level
 				StackItem item = stackItems.remove(stackItems.size() - 1);
 				item.setIndex(instruction.getOperand());
 				stackItems.set(instruction.getOperand(), item);
+				break;
 			}
 			case "CAL":{
 				TreeItem<StackItem> level = new TreeItem<StackItem>(stackItems.get(stackItems.size() - 1));
@@ -62,8 +153,7 @@ public class PL0Debugger {
 				int size = stackItems.size();
 				for (int i = size; i < size + instruction.getOperand(); i++) {
 					stackItems.add(new StackItem(i + 1, 0));
-				}
-				stackActual.setStackItems(stackItems);
+				}			
 				break;
 			}
 			case "JMP":{		
@@ -78,7 +168,7 @@ public class PL0Debugger {
 				
 			}		
 		}
-
+		stackActual.setStackItems(stackItems);
 		stackActual.setProgramCounter(instruction.getIndex());
 		stackActual.setTop(stackItems.size());
 		
