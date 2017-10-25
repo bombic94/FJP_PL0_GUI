@@ -120,7 +120,8 @@ public class MainController implements Initializable {
     	
     	//setting new filechooser
     	fileChooser = new FileChooser();
-		fileChooser.setTitle("Choose file to encrypt");
+		fileChooser.setTitle("Choose text file with p-code");
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		fileChooser.getExtensionFilters().addAll(
 		         new ExtensionFilter("Text Files", "*.txt"),
 		         new ExtensionFilter("All Files", "*.*"));

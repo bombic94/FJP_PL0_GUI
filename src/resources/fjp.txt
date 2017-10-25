@@ -1,0 +1,9 @@
+zasobnik - zvyrazneni vrcholu
+zasobnik - staticka a dynamicka vazba - ukazat, rozdelit vnorene zasobniky
+zvyraznovat bloky kodu (JMP - RET)
+heap pro alokaci novych zdroju
+vrchol
+baze
+program counter
+
+mips
