@@ -200,7 +200,7 @@ public class MainController implements Initializable {
     		
     		tableStateFuture.setRoot(null);
     	} else {
-    		futureStack = pl0.getFutureStack(now);
+    		futureStack = pl0.getFutureStack(now, instructions);
     		
 	    	int newPosition = now.getIndex();
 	    	tableInstructions.requestFocus();

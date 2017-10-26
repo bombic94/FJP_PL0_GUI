@@ -3,7 +3,6 @@ package cz.zcu.fjp.controller;
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
@@ -15,8 +14,7 @@ public class PL0Debugger {
 
 	private static PL0Debugger instance = null;
 	
-	private Stack stackActual = new Stack();
-	private Stack stackFuture = new Stack();
+	private Stack stack = new Stack();
 	
 	protected PL0Debugger() {
 		
@@ -29,29 +27,9 @@ public class PL0Debugger {
 	      return instance;
 	}
 	
-	public Stack getActualStack(Instruction instruction) {
-		stackActual.setBase(stackFuture.getBase());
-		stackActual.setProgramCounter(stackFuture.getProgramCounter());
-		stackActual.setTop(stackFuture.getTop());
-		
-		ObservableList<StackItem> stackItems = FXCollections.observableArrayList();		
-		for (StackItem si : stackFuture.getStackItems()) {
-			stackItems.add(si);
-		}
-		stackActual.setStackItems(stackItems);
-		
-		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
-		root.setExpanded(true);
-		stackActual.getStackItems().stream().forEach((stackItem) -> {
-            root.getChildren().add(new TreeItem<>(stackItem));
-        });   	
-		stackActual.setRoot(root);
-		
-		return stackActual;
-	}
-	
-	public Stack getFutureStack(Instruction instruction) {
-		ObservableList<StackItem> stackItems = stackFuture.getStackItems();
+	public Stack getFutureStack(Instruction instruction, ObservableList<Instruction> instructions) {		
+		ObservableList<StackItem> stackItems = stack.getStackItems();
+		int base = 1;
 		switch (instruction.getInstruction()) {
 			case "LIT":{
 				stackItems.add(new StackItem(stackItems.size() + 1, instruction.getOperand()));
@@ -196,20 +174,21 @@ public class PL0Debugger {
 				break;
 			}		
 		}
-		stackFuture.setStackItems(stackItems);
-		stackFuture.setProgramCounter(instruction.getIndex());
+		stack.setStackItems(stackItems);
+		stack.setProgramCounter(getFutureInstruction(instruction, instructions).getIndex());
+		stack.setBase(base);
 		if (stackItems.size() > 0) {
-			stackFuture.setTop(stackItems.get(stackItems.size() - 1).getValue());
+			stack.setTop(stackItems.get(stackItems.size() - 1).getValue());
 		}
 		
 		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
 		root.setExpanded(true);
-		stackFuture.getStackItems().stream().forEach((stackItem) -> {
+		stack.getStackItems().stream().forEach((stackItem) -> {
             root.getChildren().add(new TreeItem<>(stackItem));
         });   	
-		stackFuture.setRoot(root);
+		stack.setRoot(root);
 		
-		return stackFuture;
+		return stack;
 	}
 	
 	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) {
@@ -251,7 +230,7 @@ public class PL0Debugger {
 				}
 				case "JMC":{
 					int futureIdx = actual.getOperand();
-					if (stackActual.getTop() == 0) {
+					if (stack.getTop() == 0) {
 						future = tryGetInstruction(futureIdx, instructions);
 					} else {
 						future = tryGetInstruction(actual.getIndex() + 1, instructions);						
@@ -271,8 +250,7 @@ public class PL0Debugger {
 	}
 
 	public void nullStacks() {
-		stackActual = new Stack();
-		stackFuture = new Stack();
+		stack = new Stack();
 	}
 	
 	public Instruction tryGetInstruction(int index, ObservableList<Instruction> instructions) {
