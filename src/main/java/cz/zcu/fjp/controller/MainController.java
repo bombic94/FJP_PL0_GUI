@@ -105,8 +105,7 @@ public class MainController implements Initializable {
 	private FileChooser fileChooser;
     private PL0Debugger pl0 = PL0Debugger.getInstance();
     private FileReader fr = FileReader.getInstance();
-    private Stack actualStack;
-    private Stack futureStack;
+
 
     ObservableList<Instruction> instructions;
     
@@ -132,30 +131,8 @@ public class MainController implements Initializable {
 		btnForward.setDisable(true);
 		btnReset.setDisable(true);
 		
-		//listener to change of selected row - needs to set the stack information
-    	tableInstructions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Instruction>() {  		
-    	    @Override
-    	    public void changed(ObservableValue<? extends Instruction> observable, Instruction oldValue, Instruction actual) {
-    	    	if (actual != null) {    	    		
-	    	    	actualStack = pl0.getActualStack(actual);
-	    	    	futureStack = pl0.getFutureStack(actual);
-	    	    	System.out.println(actualStack.toString());
-	    	    	actualInstructionLabel.setText(actualStack.getProgramCounter() + "");    
-	    	    	actualBaseLabel.setText(actualStack.getBase() + "");
-	    	    	actualTopLabel.setText(actualStack.getTop() + "");
-	    	    	
-		    		futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
-		    		futureBaseLabel.setText(futureStack.getBase() + "");
-		    		futureTopLabel.setText(futureStack.getTop() + "");
-		    		
-		    		tableStateActual.setRoot(actualStack.getRoot());
-	       	    	
-		    	    tableStateFuture.setRoot(futureStack.getRoot());
-    	    	} else {	    	    	
-	    	    	resetStackView();
-    	    	}	    
-    	    }
-    	}); 	
+		//table is controlled by button, not mouse clicks
+		tableInstructions.setMouseTransparent(true);	
     }
 
 	/**
@@ -208,16 +185,40 @@ public class MainController implements Initializable {
      */
     @FXML
     void stepForward(ActionEvent event) {
-    	Instruction actual = tableInstructions.getSelectionModel().getSelectedItem();
-    	Instruction future = pl0.getFutureInstruction(actual, instructions);
-    	if (future != null) {
-	    	int newPosition = future.getIndex();
+        Stack futureStack = null;
+    	Instruction past = tableInstructions.getSelectionModel().getSelectedItem();
+    	Instruction now = pl0.getFutureInstruction(past, instructions);
+    	Instruction next = pl0.getFutureInstruction(now, instructions);
+
+		actualInstructionLabel.setText(futureInstructionLabel.getText()); 
+    	actualBaseLabel.setText(futureBaseLabel.getText());
+    	actualTopLabel.setText(futureTopLabel.getText());		
+    	tableStateActual.setRoot(tableStateFuture.getRoot());
+    	
+    	if (now == null) {
+    		btnForward.setDisable(true);
+    		
+    		tableStateFuture.setRoot(null);
+    	} else {
+    		futureStack = pl0.getFutureStack(now);
+    		
+	    	int newPosition = now.getIndex();
 	    	tableInstructions.requestFocus();
 	    	tableInstructions.getSelectionModel().select(newPosition);
 	    	tableInstructions.getFocusModel().focus(newPosition);
-    	} else  {
-    		btnForward.setDisable(true);
     	}
+    	
+    	if (futureStack == null) {
+    		futureInstructionLabel.setText("-");
+    		futureBaseLabel.setText("-");
+    		futureTopLabel.setText("-");  		   		
+    	} else { 		
+    		futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
+    		futureBaseLabel.setText(futureStack.getBase() + "");
+    		futureTopLabel.setText(futureStack.getTop() + "");
+    		
+    		tableStateFuture.setRoot(futureStack.getRoot());
+    	}    	
     }
 
     private void resetStackView() {

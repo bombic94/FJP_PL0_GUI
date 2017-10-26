@@ -30,7 +30,28 @@ public class PL0Debugger {
 	}
 	
 	public Stack getActualStack(Instruction instruction) {
-		ObservableList<StackItem> stackItems = stackActual.getStackItems();
+		stackActual.setBase(stackFuture.getBase());
+		stackActual.setProgramCounter(stackFuture.getProgramCounter());
+		stackActual.setTop(stackFuture.getTop());
+		
+		ObservableList<StackItem> stackItems = FXCollections.observableArrayList();		
+		for (StackItem si : stackFuture.getStackItems()) {
+			stackItems.add(si);
+		}
+		stackActual.setStackItems(stackItems);
+		
+		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
+		root.setExpanded(true);
+		stackActual.getStackItems().stream().forEach((stackItem) -> {
+            root.getChildren().add(new TreeItem<>(stackItem));
+        });   	
+		stackActual.setRoot(root);
+		
+		return stackActual;
+	}
+	
+	public Stack getFutureStack(Instruction instruction) {
+		ObservableList<StackItem> stackItems = stackFuture.getStackItems();
 		switch (instruction.getInstruction()) {
 			case "LIT":{
 				stackItems.add(new StackItem(stackItems.size() + 1, instruction.getOperand()));
@@ -144,7 +165,7 @@ public class PL0Debugger {
 			case "STO":{
 				//TODO implement level
 				StackItem item = stackItems.remove(stackItems.size() - 1);
-				item.setIndex(instruction.getOperand());
+				item.setIndex(instruction.getOperand() + 1);
 				stackItems.set(instruction.getOperand(), item);
 				break;
 			}
@@ -170,27 +191,25 @@ public class PL0Debugger {
 			}
 			case "RET":{
 				//TODO implement level
-				//stackActual.setBase(0);
+				//stackFuture.setBase(0);
 				//stackItems = FXCollections.observableArrayList();
 				break;
 			}		
 		}
-		stackActual.setStackItems(stackItems);
-		stackActual.setProgramCounter(instruction.getIndex());
-		stackActual.setTop(stackItems.size());
+		stackFuture.setStackItems(stackItems);
+		stackFuture.setProgramCounter(instruction.getIndex());
+		if (stackItems.size() > 0) {
+			stackFuture.setTop(stackItems.get(stackItems.size() - 1).getValue());
+		}
 		
 		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
 		root.setExpanded(true);
-		stackActual.getStackItems().stream().forEach((stackItem) -> {
+		stackFuture.getStackItems().stream().forEach((stackItem) -> {
             root.getChildren().add(new TreeItem<>(stackItem));
         });   	
-		stackActual.setRoot(root);
+		stackFuture.setRoot(root);
 		
-		return stackActual;
-	}
-	
-	public Stack getFutureStack(Instruction instruction) {
-		return stackActual;
+		return stackFuture;
 	}
 	
 	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) {
@@ -199,7 +218,7 @@ public class PL0Debugger {
 		if (actual == null) {
 			future = instructions.get(0);
 		} else {
-			System.out.println(actual.toString());
+			System.out.println("Actual instruction: " + actual.toString());
 			switch (actual.getInstruction()) {
 				case "LIT":{
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
@@ -260,7 +279,7 @@ public class PL0Debugger {
 		Instruction instruction = null;
 		try {
 			instruction = instructions.get(index);
-			System.out.println(instruction.toString());
+			System.out.println("Future instruction: " + instruction.toString());
 		} catch (Exception e) {
 			// do nothing, return null
 		}
