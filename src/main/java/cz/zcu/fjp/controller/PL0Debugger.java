@@ -175,7 +175,11 @@ public class PL0Debugger {
 			}		
 		}
 		stack.setStackItems(stackItems);
-		stack.setProgramCounter(getFutureInstruction(instruction, instructions).getIndex());
+		if (getFutureInstruction(instruction, instructions) != null) {
+			stack.setProgramCounter(getFutureInstruction(instruction, instructions).getIndex());
+		} else {
+			stack.setProgramCounter(-1);
+		}
 		stack.setBase(base);
 		if (stackItems.size() > 0) {
 			stack.setTop(stackItems.get(stackItems.size() - 1).getValue());
