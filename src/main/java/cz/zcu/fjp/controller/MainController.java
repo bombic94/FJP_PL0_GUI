@@ -196,8 +196,6 @@ public class MainController implements Initializable {
     	tableStateActual.setRoot(tableStateFuture.getRoot());
     	future = pl0.getFutureInstruction(now, instructions);
     	
-    	future = pl0.getFutureInstruction(now, instructions);
-    	
     	if (now == null) {
     		btnForward.setDisable(true);
     		
