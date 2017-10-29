@@ -170,7 +170,7 @@ public class PL0Debugger {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
 					StackItem item = stackItems.remove(stackItems.size() - 1);
-					item.setIndex(actual.getOperand() + 1);
+					item.setIndex(actual.getOperand() + getBase(actual.getLevel()));
 					stackItems.set(getBase(actual.getLevel()) - 1 + actual.getOperand(), item);
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);
@@ -180,13 +180,12 @@ public class PL0Debugger {
 					future = tryGetInstruction(actual.getOperand(), instructions);
 					
 					StackItem item1 = new StackItem(stack.getTop().getIndex() + 1, getBase(actual.getLevel()));
-					StackItem item2 = new StackItem(stack.getTop().getIndex() + 2, stack.getBase().getValue());
-					StackItem item3 = new StackItem(stack.getTop().getIndex() + 3, stack.getProgramCounter());
+					StackItem item2 = new StackItem(stack.getTop().getIndex() + 2, stack.getBase().getIndex());
+					StackItem item3 = new StackItem(stack.getTop().getIndex() + 3, stack.getProgramCounter() + 1);
 					
-					stack.setBase(stack.getTop());
+					//stack.setBase(stack.getTop());
 					stack.setProgramCounter(actual.getOperand());
 					
-					//stack.getStackItems().addAll(item1, item2, item3);
 					stackItemsToAdd = FXCollections.observableArrayList(item1, item2, item3);
 					break;
 				}
@@ -194,8 +193,18 @@ public class PL0Debugger {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
 					if (stackItemsToAdd != null && !stackItemsToAdd.isEmpty()) {
+						if (actual.getOperand() > stackItemsToAdd.size()) {
+							for (int i = stackItemsToAdd.size(); i < actual.getOperand(); i++) {
+								int plus = 1;
+								int index = stackItemsToAdd.get(stackItemsToAdd.size() - 1).getIndex() + plus;
+								stackItemsToAdd.add(new StackItem(index, 0));
+								plus++;
+							}
+						}
+						stack.setBase(stackItemsToAdd.get(0));
 						stackItems.addAll(stackItemsToAdd);
 						stackItemsToAdd.removeAll(stackItemsToAdd);
+						
 					} else {
 						int size = stackItems.size();
 						for (int i = size; i < size + actual.getOperand(); i++) {
@@ -228,16 +237,19 @@ public class PL0Debugger {
 					break;
 				}
 				case "RET":{
-					stack.setTop(stack.getBase());
 					
-					if (stack.getTop().getIndex() - 2 < 0) {
+					
+					if (stack.getBase().getIndex() <= 1) {
 						future = null;
 						stack.setProgramCounter(-1);
 					} else {
-						future = tryGetInstruction(stackItems.get(stack.getTop().getIndex() - 2).getIndex(), instructions);
+						stack.setTop(stackItems.get(stack.getBase().getIndex() - 2));
+						future = tryGetInstruction(stackItems.get(stack.getTop().getIndex() + 2).getValue(), instructions);
 								
-						stack.setProgramCounter(stackItems.get(stack.getTop().getIndex()).getValue());
-						stack.setBase(stackItems.get(stack.getTop().getIndex() - 1));
+						stack.setProgramCounter(future.getIndex());
+						stack.setBase(stackItems.get(stackItems.get(stack.getTop().getIndex() + 1).getValue() - 1));
+						
+						stackItems.subList(stack.getTop().getIndex(), stackItems.size()).clear();
 					}	
 					
 					break;
@@ -289,7 +301,7 @@ public class PL0Debugger {
 		newBase = stack.getBase().getIndex();
 		System.out.println(newBase);
 		while ( level > 0 ){
-			newBase = stack.getStackItems().get(newBase).getValue();
+			newBase = stack.getStackItems().get(newBase - 1).getValue();
 			level--;
 			System.out.println(newBase);
 		}

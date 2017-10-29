@@ -189,12 +189,13 @@ public class MainController implements Initializable {
     void stepForward(ActionEvent event) {
         Stack futureStack = null;
     	Instruction now = future;
-    	future = pl0.getFutureInstruction(now, instructions);
 
 		actualInstructionLabel.setText(futureInstructionLabel.getText()); 
     	actualBaseLabel.setText(futureBaseLabel.getText());
     	actualTopLabel.setText(futureTopLabel.getText());		
     	tableStateActual.setRoot(tableStateFuture.getRoot());
+    	
+    	future = pl0.getFutureInstruction(now, instructions);
     	
     	if (now == null) {
     		btnForward.setDisable(true);
