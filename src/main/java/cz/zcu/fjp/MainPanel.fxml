@@ -17,9 +17,9 @@
 <?import javafx.scene.control.cell.TreeItemPropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.zcu.fjp.controller.MainController">
+<AnchorPane fx:id="anchorPane" minHeight="600.0" minWidth="800.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.zcu.fjp.controller.MainController">
    <children>
-      <SplitPane dividerPositions="0.92" layoutX="202.0" layoutY="102.0" orientation="VERTICAL" prefHeight="374.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.92" layoutX="202.0" layoutY="102.0" orientation="VERTICAL" prefHeight="374.0" prefWidth="598.0" scaleShape="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
@@ -40,12 +40,12 @@
 													        <Label text="No items in stack" />
 													    </placeholder>
                                                         <columns>
-                                                          <TreeTableColumn fx:id="col1Index" editable="false" prefWidth="100.0" sortable="false" text="Index">
+                                                          <TreeTableColumn fx:id="col1Index" editable="false" prefWidth="${tableStateActual.width * 0.65}" sortable="false" text="Index">
                                                          		<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="index" />
   															</cellValueFactory>
   														</TreeTableColumn>
-                                                          <TreeTableColumn fx:id="col1Value" editable="false" prefWidth="50.0" sortable="false" text="Value">
+                                                          <TreeTableColumn fx:id="col1Value" editable="false" prefWidth="${tableStateActual.width * 0.33}" sortable="false" text="Value">
                                                           	<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="value" />
   															</cellValueFactory>
@@ -78,12 +78,12 @@
 													        <Label text="No items in stack" />
 													    </placeholder>
                                                         <columns>
-                                                          <TreeTableColumn fx:id="col2Index" editable="false" prefWidth="100.0" sortable="false" text="Index">
+                                                          <TreeTableColumn fx:id="col2Index" editable="false" prefWidth="${tableStateFuture.width * 0.65}" sortable="false" text="Index">
                                                          		<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="index" />
   															</cellValueFactory>
   														</TreeTableColumn>
-                                                          <TreeTableColumn fx:id="col2Value" editable="false" prefWidth="50.0" sortable="false" text="Value">
+                                                          <TreeTableColumn fx:id="col2Value" editable="false" prefWidth="${tableStateFuture.width * 0.33}" sortable="false" text="Value">
                                                           	<cellValueFactory>
                                                                   <TreeItemPropertyValueFactory property="value" />
   															</cellValueFactory>
@@ -116,27 +116,27 @@
 							        <Label text="No instructions" />
 							    </placeholder>
                                 <columns>
-                                  <TableColumn fx:id="columnIndex" editable="false" sortable="false" text="Index">
+                                  <TableColumn fx:id="columnIndex" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Index">
                                   	<cellValueFactory>
                                           <PropertyValueFactory property="index" />
   									</cellValueFactory>
                                   </TableColumn>
-                                  <TableColumn fx:id="columnInstruction" editable="false" sortable="false" text="Instruction">
+                                  <TableColumn fx:id="columnInstruction" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Instruction">
                                   	<cellValueFactory>
                                           <PropertyValueFactory property="instruction" />
   									</cellValueFactory>
                                   </TableColumn>
-                                  <TableColumn fx:id="columnLevel" editable="false" sortable="false" text="Level">
+                                  <TableColumn fx:id="columnLevel" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Level">
                                   	<cellValueFactory>
                                           <PropertyValueFactory property="level" />
   									</cellValueFactory>
                                   </TableColumn>
-                                  <TableColumn fx:id="columnOperand" editable="false" sortable="false" text="Operand">
+                                  <TableColumn fx:id="columnOperand" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Operand">
                                   	<cellValueFactory>
                                           <PropertyValueFactory property="operand" />
   									</cellValueFactory>
                                   </TableColumn>
-                                  <TableColumn fx:id="columnInfo" editable="false" prefWidth="350.0" sortable="false" text="Debug">
+                                  <TableColumn fx:id="columnInfo" editable="false" prefWidth="${tableInstructions.width * 0.48}" sortable="false" text="Debug">
                                   	<cellValueFactory>
                                           <PropertyValueFactory property="debug" />
   									</cellValueFactory>
@@ -154,11 +154,11 @@
                   </SplitPane>
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="66.0" prefWidth="1022.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="66.0" prefWidth="1022.0" SplitPane.resizableWithParent="false">
                <children>
-                  <Button fx:id="btnForward" layoutX="888.0" layoutY="13.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="25.0" prefWidth="120.0" text="Step forward" />
-                  <Button fx:id="btnReset" layoutX="768.0" layoutY="13.0" mnemonicParsing="false" onAction="#reset" prefHeight="25.0" prefWidth="120.0" text="Reset" />
-                  <Button fx:id="btnLoad" defaultButton="true" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#loadFile" prefHeight="25.0" prefWidth="120.0" text="Load file" />
+                  <Button fx:id="btnForward" mnemonicParsing="false" onAction="#stepForward" prefHeight="25.0" prefWidth="120.0" text="Step forward" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="btnReset" mnemonicParsing="false" onAction="#reset" prefHeight="25.0" prefWidth="120.0" text="Reset" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="btnLoad" defaultButton="true" mnemonicParsing="false" onAction="#loadFile" prefHeight="25.0" prefWidth="120.0" text="Load file" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
                </children>
             </AnchorPane>
         </items>

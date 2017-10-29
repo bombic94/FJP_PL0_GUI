@@ -16,8 +16,9 @@ public class MainFrame extends Application {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("MainPanel.fxml"));
 			Scene scene = new Scene(root, 1024, 768);
-			primaryStage.setResizable(false);
 			primaryStage.setTitle("PL/0 interpreter");
+			primaryStage.setMinHeight(600);
+			primaryStage.setMinWidth(800);
 			scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
