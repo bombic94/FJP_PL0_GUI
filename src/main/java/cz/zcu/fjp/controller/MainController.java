@@ -194,6 +194,7 @@ public class MainController implements Initializable {
     	actualBaseLabel.setText(futureBaseLabel.getText());
     	actualTopLabel.setText(futureTopLabel.getText());		
     	tableStateActual.setRoot(tableStateFuture.getRoot());
+    	future = pl0.getFutureInstruction(now, instructions);
     	
     	future = pl0.getFutureInstruction(now, instructions);
     	
