@@ -9,8 +9,6 @@ import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +19,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.AnchorPane;
@@ -105,6 +102,7 @@ public class MainController implements Initializable {
 	private FileChooser fileChooser;
     private PL0Debugger pl0 = PL0Debugger.getInstance();
     private FileReader fr = FileReader.getInstance();
+    private Instruction future;
 
 
     ObservableList<Instruction> instructions;
@@ -153,6 +151,8 @@ public class MainController implements Initializable {
 	    		tableInstructions.setItems(instructions);
 	    		btnForward.setDisable(false);
 	    		btnReset.setDisable(false);
+	    		
+	    		future = pl0.getFutureInstruction(null, instructions);
 	    	} else {
 	    		resetStackView();
 	    		Alert alert = new Alert(AlertType.ERROR);
@@ -176,6 +176,8 @@ public class MainController implements Initializable {
     	tableInstructions.requestFocus();
     	tableInstructions.getSelectionModel().clearSelection();
     	
+    	future = pl0.getFutureInstruction(null, instructions);
+    	
     	btnForward.setDisable(false);
     }
 
@@ -186,9 +188,8 @@ public class MainController implements Initializable {
     @FXML
     void stepForward(ActionEvent event) {
         Stack futureStack = null;
-    	Instruction past = tableInstructions.getSelectionModel().getSelectedItem();
-    	Instruction now = pl0.getFutureInstruction(past, instructions);
-    	Instruction next = pl0.getFutureInstruction(now, instructions);
+    	Instruction now = future;
+    	future = pl0.getFutureInstruction(now, instructions);
 
 		actualInstructionLabel.setText(futureInstructionLabel.getText()); 
     	actualBaseLabel.setText(futureBaseLabel.getText());
@@ -200,7 +201,7 @@ public class MainController implements Initializable {
     		
     		tableStateFuture.setRoot(null);
     	} else {
-    		futureStack = pl0.getFutureStack(now, instructions);
+    		futureStack = pl0.getFutureStack();
     		
 	    	int newPosition = now.getIndex();
 	    	tableInstructions.requestFocus();
@@ -214,14 +215,15 @@ public class MainController implements Initializable {
     		futureTopLabel.setText("-");  		   		
     	} else { 		
     		futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
-    		futureBaseLabel.setText(futureStack.getBase() + "");
-    		futureTopLabel.setText(futureStack.getTop() + "");
+    		futureBaseLabel.setText("[" + futureStack.getBase().getIndex() + ", " + futureStack.getBase().getValue() + "]");
+    		futureTopLabel.setText("[" + futureStack.getTop().getIndex() + ", " + futureStack.getTop().getValue() + "]");
     		
     		tableStateFuture.setRoot(futureStack.getRoot());
     	}    	
     }
 
     private void resetStackView() {
+    	
 		actualInstructionLabel.setText("-");    
     	actualBaseLabel.setText("-");
     	actualTopLabel.setText("-");    	

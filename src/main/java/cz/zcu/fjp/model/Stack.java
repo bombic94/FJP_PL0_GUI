@@ -11,13 +11,13 @@ import javafx.scene.control.TreeItem;
  * Also contains info about list of items in stack
  */
 public class Stack {
-	private SimpleIntegerProperty base = new SimpleIntegerProperty();
-	private SimpleIntegerProperty top = new SimpleIntegerProperty();
+	private StackItem base = new StackItem();
+	private StackItem top = new StackItem();
 	private SimpleIntegerProperty programCounter = new SimpleIntegerProperty();
 	private ObservableList<StackItem> stackItems;
 	private TreeItem<StackItem> root;
 	
-	public Stack(int base, int top, int instructionCount, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
+	public Stack(StackItem base, StackItem top, int instructionCount, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
 		super();
 		setBase(base);
 		setTop(top);
@@ -27,20 +27,20 @@ public class Stack {
 	}
 	
 	public Stack() {
-		this(0, 0, 0, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
+		this(new StackItem(1,0), new StackItem(0,0), 0, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
 	}
 
-	public int getBase() {
-		return base.get();
+	public StackItem getBase() {
+		return base;
 	}
-	public void setBase(int base) {
-		this.base.set(base);
+	public void setBase(StackItem base) {
+		this.base = base;
 	}
-	public int getTop() {
-		return top.get();
+	public StackItem getTop() {
+		return top;
 	}
-	public void setTop(int top) {
-		this.top.set(top);
+	public void setTop(StackItem top) {
+		this.top = top;
 	}
 	public int getProgramCounter() {
 		return programCounter.get();
@@ -65,8 +65,8 @@ public class Stack {
 	public String toString() {
 		return new StringBuilder("Stack: ")
 				.append("Program counter - ").append(getProgramCounter())
-				.append("Base - ").append(getBase())
-				.append("Top stack register - ").append(getTop())
+				.append("Base - ").append(getBase().toString())
+				.append("Top stack register - ").append(getTop().toString())
 				.append("StackItems - ").append(getStackItems().toString())
 				.append("Root - ").append(getRoot().toString())
 				.toString();	
