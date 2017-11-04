@@ -17,8 +17,9 @@ public class PL0Debugger {
 	
 	private Stack stack = new Stack();
 	private ObservableList<StackItem> stackItemsToAdd;// = FXCollections.observableArrayList();
+	
 	protected PL0Debugger() {
-		
+
 	}
 	
 	public static PL0Debugger getInstance() {
@@ -30,16 +31,12 @@ public class PL0Debugger {
 	
 	public Stack getFutureStack() {		
 		return stack;
-	}
-	
-	private StackItem getLast(ObservableList<TreeItem<StackItem>> stackItems) {
-		return stackItems.get(stackItems.size() - 1).getValue();
 	}	
 
 	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) {
 		
-		ObservableList<TreeItem<StackItem>> stackItems = stack.getRoot().getChildren();
-
+		ObservableList<TreeItem<StackItem>> stackItems = getActualList();
+		
 		Instruction future = null;
 		if (actual == null) { //first instruction
 			future = instructions.get(0);
@@ -50,7 +47,7 @@ public class PL0Debugger {
 				case "LIT":{
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, actual.getOperand())));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, actual.getOperand())));
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);
 					break;
@@ -66,90 +63,90 @@ public class PL0Debugger {
 						case 1:{ //negate
 							StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item.getValue() * (-1);
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 2:{ //sum
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item1.getValue() + item2.getValue();
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 3:{ //substract
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item1.getValue() - item2.getValue();
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 4:{ //multiply
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item1.getValue() * item2.getValue();
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 5:{ //divide
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item1.getValue() / item2.getValue();
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 6:{ //modulo
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item1.getValue() % item2.getValue();
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 7:{//odd?
 							StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = item.getValue() % 2;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 8:{ //equal
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = (item1.getValue() == item2.getValue()) ? 1 : 0;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 9:{ //not equal
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = (item1.getValue() != item2.getValue()) ? 1 : 0;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 10:{ //less than
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = (item1.getValue() < item2.getValue()) ? 1 : 0;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 11:{ //greater than or equal
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = (item1.getValue() >= item2.getValue()) ? 1 : 0;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 12:{ //greater than
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = (item1.getValue() > item2.getValue()) ? 1 : 0;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 						case 13:{ //less than or equal
 							StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 							StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 							int returnValue = (item1.getValue() <= item2.getValue()) ? 1 : 0;
-							stackItems.add(new TreeItem<StackItem>(new StackItem(stackItems.size() + 1, returnValue)));
+							stackItems.add(new TreeItem<StackItem>(new StackItem(getLast(stackItems).getIndex() + 1, returnValue)));
 							break;
 						}
 					}
@@ -160,8 +157,7 @@ public class PL0Debugger {
 				case "LOD":{
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					StackItem item = new StackItem(stackItems.size() + 1, stackItems.get(getBase(actual.getLevel()) - 1 + actual.getOperand()).getValue().getValue());
-					//item.setIndex(stackItems.size() + 1);
+					StackItem item = new StackItem(getLast(stackItems).getIndex() + 1, stackItems.get(getBase(actual.getLevel()) - 1 + actual.getOperand()).getValue().getValue());
 					stackItems.add(new TreeItem<StackItem>(item));
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);
@@ -171,7 +167,7 @@ public class PL0Debugger {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
 					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-					item.setIndex(actual.getOperand() + getBase(actual.getLevel()));
+					item.setIndex(actual.getOperand() + 1 + getBase(actual.getLevel()));
 					stackItems.set(getBase(actual.getLevel()) - 1 + actual.getOperand(), new TreeItem<StackItem>(item));
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);
@@ -202,21 +198,32 @@ public class PL0Debugger {
 								plus++;
 							}
 						}
+						
 						stack.setBase(stackItemsToAdd.get(0));
+						
 						TreeItem<StackItem> subroot = new TreeItem<StackItem>(stackItemsToAdd.get(0));
 						subroot.setExpanded(true);
 						for (int i = 1; i < stackItemsToAdd.size(); i++) {
 							subroot.getChildren().add(new TreeItem<StackItem>(stackItemsToAdd.get(i)));
 						}
-						//stackItems.addAll(stackItemsToAdd);
 						stackItems.add(subroot);
 						stackItemsToAdd.removeAll(stackItemsToAdd);
 						
+						stack.setLevel(stack.getLevel() + 1);
+						stack.setTop(getLast(stackItems));
 					} else {
-						int size = stackItems.size();
-						for (int i = size; i < size + actual.getOperand(); i++) {
-							stackItems.add(new TreeItem<StackItem>(new StackItem(i + 1, 0)));
-						}			
+						int size = stackItems.size() + 1;
+						stack.setBase(new StackItem(size, 0));
+						
+						TreeItem<StackItem> subroot = new TreeItem<StackItem>(new StackItem(size, 0));
+						subroot.setExpanded(true);
+						
+						for (int i = size + 1; i < size + actual.getOperand(); i++) {
+							subroot.getChildren().add(new TreeItem<StackItem>(new StackItem(i, 0)));
+						}	
+						stackItems.add(subroot);
+						
+						stack.setLevel(stack.getLevel() + 1);
 						stack.setTop(getLast(stackItems));
 					}
 					
@@ -238,7 +245,7 @@ public class PL0Debugger {
 						future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					}
 					
-					stackItems.remove(stack.getTop().getIndex() - 1);
+					stackItems.remove(stackItems.size() - 1);
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);				
 					break;
@@ -263,22 +270,45 @@ public class PL0Debugger {
 				}		
 			}
 		}
-		//stack.setStackItems(stackItems);
+//		stack.setStackItems(stackItems);
 		
 		if (future == null) {
 			stack.setProgramCounter(-1);	
 		}
 		
-		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
-		root.setExpanded(true);
+//		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
+//		root.setExpanded(true);
 //		stack.getStackItems().stream().forEach((stackItem) -> {
 //            root.getChildren().add(new TreeItem<>(stackItem));
 //        });   
-		root.getChildren().addAll(stackItems);
-		stack.setRoot(root);
+//		root.getChildren().addAll(stackItems);
+//		stack.setRoot(root);
 		
+		//setRoot(stackItems);
 		return future;
 		
+	}
+
+	private void setRoot(ObservableList<TreeItem<StackItem>> stackItems) {
+		TreeItem<StackItem> root = stack.getRoot();
+		root.setExpanded(true);
+		stack.setRoot(root);
+	}
+
+	private ObservableList<TreeItem<StackItem>> getActualList() {
+		int level = stack.getLevel();
+		ObservableList<TreeItem<StackItem>> list;
+		if (level > 0) {
+			list = stack.getRoot().getChildren();
+			for (int i = 0; i < level; i++) {
+				list = list.get(list.size() - 1).getChildren();
+				System.out.println("level " + list.get(0));
+			}
+		} else {
+			list = stack.getRoot().getChildren();
+			System.out.println("only root ");
+		}
+		return list;
 	}
 
 	private void trySetPC(Instruction future) {
@@ -305,14 +335,18 @@ public class PL0Debugger {
 	}
 	
 	public int getBase(int level){
-		int newBase;
-		newBase = stack.getBase().getIndex();
+		TreeItem<StackItem> newBase = stack.getRoot();
 		System.out.println(newBase);
-		while ( level > 0 ){
-			newBase = stack.getStackItems().get(newBase - 1).getValue();
+		while ( level > 1 ){
+			newBase = newBase.getParent();
 			level--;
+			//if (newBase.getValue().getIndex() == -1) newBase = newBase.getChildren().get(0);
 			System.out.println(newBase);
 		}
-		return newBase;
+		return newBase.getValue().getIndex();
+	}
+	
+	private StackItem getLast(ObservableList<TreeItem<StackItem>> stackItems) {
+		return stackItems.get(stackItems.size() - 1).getValue();
 	}
 }

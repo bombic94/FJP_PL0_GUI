@@ -14,20 +14,22 @@ public class Stack {
 	private StackItem base = new StackItem();
 	private StackItem top = new StackItem();
 	private SimpleIntegerProperty programCounter = new SimpleIntegerProperty();
+	private int level;
 	private ObservableList<StackItem> stackItems;
 	private TreeItem<StackItem> root;
 	
-	public Stack(StackItem base, StackItem top, int instructionCount, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
+	public Stack(StackItem base, StackItem top, int instructionCount, int level, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
 		super();
 		setBase(base);
 		setTop(top);
 		setProgramCounter(instructionCount);
+		setLevel(level);
 		setStackItems(stackItems);
 		setRoot(root);
 	}
-	
+
 	public Stack() {
-		this(new StackItem(1,0), new StackItem(0,0), 0, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
+		this(new StackItem(1,0), new StackItem(0,0), 0, 0, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
 	}
 
 	public StackItem getBase() {
@@ -47,6 +49,12 @@ public class Stack {
 	}
 	public void setProgramCounter(int instructionCount) {
 		this.programCounter.set(instructionCount);
+	}
+	public int getLevel() {
+		return level;
+	}
+	public void setLevel(int level) {
+		this.level = level;
 	}
 	public ObservableList<StackItem> getStackItems() {
 		return stackItems;
@@ -71,4 +79,6 @@ public class Stack {
 				.append("Root - ").append(getRoot().toString())
 				.toString();	
 	}
+
+	
 }

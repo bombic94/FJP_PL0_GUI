@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.AnchorPane;
@@ -103,7 +104,7 @@ public class MainController implements Initializable {
     private PL0Debugger pl0 = PL0Debugger.getInstance();
     private FileReader fr = FileReader.getInstance();
     private Instruction future;
-
+    private TreeItem<StackItem> rootCopy = null;
 
     ObservableList<Instruction> instructions;
     
@@ -193,7 +194,8 @@ public class MainController implements Initializable {
 		actualInstructionLabel.setText(futureInstructionLabel.getText()); 
     	actualBaseLabel.setText(futureBaseLabel.getText());
     	actualTopLabel.setText(futureTopLabel.getText());		
-    	tableStateActual.setRoot(tableStateFuture.getRoot());
+    	tableStateActual.setRoot(rootCopy);
+    	
     	future = pl0.getFutureInstruction(now, instructions);
     	
     	if (now == null) {
@@ -218,11 +220,22 @@ public class MainController implements Initializable {
     		futureBaseLabel.setText("[" + futureStack.getBase().getIndex() + ", " + futureStack.getBase().getValue() + "]");
     		futureTopLabel.setText("[" + futureStack.getTop().getIndex() + ", " + futureStack.getTop().getValue() + "]");
     		
-    		tableStateFuture.setRoot(futureStack.getRoot());
+    		
+    		rootCopy = copy(futureStack.getRoot());
+    		tableStateFuture.setRoot(rootCopy);
     	}    	
     }
 
-    private void resetStackView() {
+    private TreeItem<StackItem> copy(TreeItem<StackItem> root) {
+	    TreeItem<StackItem> copy = new TreeItem<StackItem>(root.getValue());
+	    for (TreeItem<StackItem> child : root.getChildren()) {
+	        copy.getChildren().add(copy(child));
+	    }
+	    copy.setExpanded(true);
+	    return copy;
+	}
+
+	private void resetStackView() {
     	
 		actualInstructionLabel.setText("-");    
     	actualBaseLabel.setText("-");
