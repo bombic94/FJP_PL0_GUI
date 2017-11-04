@@ -157,7 +157,7 @@ public class PL0Debugger {
 				case "LOD":{
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					StackItem item = new StackItem(getLast(stackItems).getIndex() + 1, stackItems.get(getBase(actual.getLevel()) - 1 + actual.getOperand()).getValue().getValue());
+					StackItem item = new StackItem(getLast(stackItems).getIndex() + 1, stackItems.get(getBase(actual.getLevel()) + actual.getOperand()).getValue().getValue());
 					stackItems.add(new TreeItem<StackItem>(item));
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);
@@ -167,8 +167,8 @@ public class PL0Debugger {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
 					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-					item.setIndex(actual.getOperand() + 1 + getBase(actual.getLevel()));
-					stackItems.set(getBase(actual.getLevel()) - 1 + actual.getOperand(), new TreeItem<StackItem>(item));
+					item.setIndex(actual.getOperand() + 2 + getBase(actual.getLevel()));
+					stackItems.set(getBase(actual.getLevel()) + actual.getOperand(), new TreeItem<StackItem>(item));
 					stack.setTop(getLast(stackItems));
 					trySetPC(future);
 					break;
