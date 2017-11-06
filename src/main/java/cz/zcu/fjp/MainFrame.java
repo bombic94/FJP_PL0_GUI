@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  * Main class launches GUI and starts controller
  */
 public class MainFrame extends Application {
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -22,11 +22,11 @@ public class MainFrame extends Application {
 			scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
