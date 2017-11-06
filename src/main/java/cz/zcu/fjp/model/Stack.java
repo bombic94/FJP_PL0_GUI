@@ -11,14 +11,14 @@ import javafx.scene.control.TreeItem;
  * Also contains info about list of items in stack
  */
 public class Stack {
-	private StackItem base = new StackItem();
-	private StackItem top = new StackItem();
+	private TreeItem<StackItem> base;
+	private TreeItem<StackItem> top;
 	private SimpleIntegerProperty programCounter = new SimpleIntegerProperty();
 	private int level;
 	private ObservableList<StackItem> stackItems;
 	private TreeItem<StackItem> root;
 	
-	public Stack(StackItem base, StackItem top, int instructionCount, int level, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
+	public Stack(TreeItem<StackItem> base, TreeItem<StackItem> top, int instructionCount, int level, ObservableList<StackItem> stackItems, TreeItem<StackItem> root) {
 		super();
 		setBase(base);
 		setTop(top);
@@ -29,19 +29,22 @@ public class Stack {
 	}
 
 	public Stack() {
-		this(new StackItem(1,0), new StackItem(0,0), 0, 0, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
+		this(new TreeItem<StackItem>(new StackItem(1, 0)), new TreeItem<StackItem>(new StackItem(0, 0)), 0, -1, FXCollections.observableArrayList(), new TreeItem<StackItem>(new StackItem(-1, -1)));
 	}
 
-	public StackItem getBase() {
+	public TreeItem<StackItem> getBase() {
 		return base;
 	}
-	public void setBase(StackItem base) {
+	public void setBase(TreeItem<StackItem> base) {
+		if (this.base != null) {
+			this.base.getChildren().add(base);
+		}
 		this.base = base;
 	}
-	public StackItem getTop() {
+	public TreeItem<StackItem> getTop() {
 		return top;
 	}
-	public void setTop(StackItem top) {
+	public void setTop(TreeItem<StackItem> top) {
 		this.top = top;
 	}
 	public int getProgramCounter() {

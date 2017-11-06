@@ -217,8 +217,8 @@ public class MainController implements Initializable {
     		futureTopLabel.setText("-");  		   		
     	} else { 		
     		futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
-    		futureBaseLabel.setText("[" + futureStack.getBase().getIndex() + ", " + futureStack.getBase().getValue() + "]");
-    		futureTopLabel.setText("[" + futureStack.getTop().getIndex() + ", " + futureStack.getTop().getValue() + "]");
+    		futureBaseLabel.setText("[" + futureStack.getBase().getValue().getIndex() + ", " + futureStack.getBase().getValue().getValue() + "]");
+    		futureTopLabel.setText("[" + futureStack.getTop().getValue().getIndex() + ", " + futureStack.getTop().getValue().getValue() + "]");
     		
     		
     		rootCopy = copy(futureStack.getRoot());
@@ -246,6 +246,6 @@ public class MainController implements Initializable {
 		tableStateActual.setRoot(null);
 		tableStateFuture.setRoot(null);
 
-		pl0.nullStacks();
+		pl0.nullStack();
 	}
 }
