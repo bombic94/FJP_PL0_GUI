@@ -159,7 +159,7 @@ public class PL0Debugger {
 					trySetPC(future);
 					break;
 				}
-				case "LOD":{ //recursion method to get right list
+				case "LOD":{
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
 					TreeItem<StackItem> item = getItemOnLevel(actual.getLevel(), actual.getOperand());
@@ -169,13 +169,11 @@ public class PL0Debugger {
 					trySetPC(future);
 					break;
 				}
-				case "STO":{//recursion method to get right list
+				case "STO":{
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
 					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
 					setItemOnLevel(actual.getLevel(), actual.getOperand(), new TreeItem<StackItem>(item));
-					//item.setIndex(actual.getOperand() - 1 + getBase(actual.getLevel()));
-					//stackItems.set(actual.getOperand() - 2, new TreeItem<StackItem>(item));
 					trySetTop(stackItems);
 					trySetPC(future);
 					break;
@@ -265,36 +263,23 @@ public class PL0Debugger {
 						future = null;
 						stack.setProgramCounter(-1);
 					} else {
-						stack.setTop(new TreeItem<StackItem>(stackItems.get(stack.getBase().getValue().getIndex() - 2).getValue()));
-						future = tryGetInstruction(stackItems.get(stack.getTop().getValue().getIndex() + 2).getValue().getValue(), instructions);
-								
-						stack.setProgramCounter(future.getIndex());
-						stack.setBase(new TreeItem<StackItem>(stackItems.get(stackItems.get(stack.getTop().getValue().getIndex() + 1).getValue().getValue() - 1).getValue()));
+						future = tryGetInstruction(stack.getBase().getChildren().get(1).getValue().getValue(), instructions);
+						trySetPC(future);
 						
-						stackItems.subList(stack.getTop().getValue().getIndex(), stackItems.size()).clear();
+						stack.setBase(stack.getBase().getParent());
+						stack.getBase().getChildren().remove(stack.getBase().getChildren().size() - 1);
+						
+						trySetTop(stack.getBase().getChildren());
+
+						stack.setLevel(stack.getLevel() - 1);
 					}	
 					
 					break;
 				}		
 			}
 		}
-//		stack.setStackItems(stackItems);
 		
-//		if (future == null) {
-//			stack.setProgramCounter(-1);	
-//		}
-		
-//		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
-//		root.setExpanded(true);
-//		stack.getStackItems().stream().forEach((stackItem) -> {
-//            root.getChildren().add(new TreeItem<>(stackItem));
-//        });   
-//		root.getChildren().addAll(stackItems);
-//		stack.setRoot(root);
-		
-		//setRoot(stackItems);
-		return future;
-		
+		return future;	
 	}
 
 	private void setRoot(ObservableList<TreeItem<StackItem>> stackItems) {
@@ -417,8 +402,9 @@ public class PL0Debugger {
 	 */
 	public void setItemOnLevel(int level, int offset, TreeItem<StackItem> item) {
 		log.info("Setting item on level: " + level + " and offset: " + offset + ", item: " + item);
-		item.getValue().setIndex(offset + 1);
+		//item.getValue().setIndex(offset + 1);
 		TreeItem<StackItem> newBase = this.getBase(level);
+		item.getValue().setIndex(newBase.getValue().getIndex() + offset);
 		newBase.getChildren().set(offset - 1, item);
 	}
 	
