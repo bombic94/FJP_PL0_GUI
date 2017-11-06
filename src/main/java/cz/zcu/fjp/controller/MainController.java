@@ -245,7 +245,7 @@ public class MainController implements Initializable {
 		futureTopLabel.setText("-");
 		tableStateActual.setRoot(null);
 		tableStateFuture.setRoot(null);
-
+		rootCopy = null;
 		pl0.nullStack();
 	}
 }

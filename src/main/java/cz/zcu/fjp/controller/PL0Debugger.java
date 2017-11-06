@@ -206,18 +206,18 @@ public class PL0Debugger {
 							}
 						}
 						
-						stack.setBase(new TreeItem<StackItem>(stackItemsToAdd.get(0)));
-						
 						TreeItem<StackItem> subroot = new TreeItem<StackItem>(stackItemsToAdd.get(0));
 						subroot.setExpanded(true);
 						for (int i = 1; i < stackItemsToAdd.size(); i++) {
 							subroot.getChildren().add(new TreeItem<StackItem>(stackItemsToAdd.get(i)));
 						}
 						stackItems.add(subroot);
+						stack.setBase(subroot);
+						
 						stackItemsToAdd.removeAll(stackItemsToAdd);
 						
 						stack.setLevel(stack.getLevel() + 1);
-						trySetTop(stackItems);
+						trySetTop(subroot.getChildren());
 					} else {
 						int size = stackItems.size() + 1;
 						
@@ -232,7 +232,7 @@ public class PL0Debugger {
 						
 						stack.setBase(subroot);
 						stack.setLevel(stack.getLevel() + 1);
-						trySetTop(stackItems);
+						trySetTop(subroot.getChildren());
 					}
 					
 					
@@ -280,9 +280,9 @@ public class PL0Debugger {
 		}
 //		stack.setStackItems(stackItems);
 		
-		if (future == null) {
-			stack.setProgramCounter(-1);	
-		}
+//		if (future == null) {
+//			stack.setProgramCounter(-1);	
+//		}
 		
 //		TreeItem<StackItem> root = new TreeItem<StackItem>(new StackItem(-1, -1));
 //		root.setExpanded(true);

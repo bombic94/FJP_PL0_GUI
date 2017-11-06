@@ -36,9 +36,6 @@ public class Stack {
 		return base;
 	}
 	public void setBase(TreeItem<StackItem> base) {
-		if (this.base != null) {
-			this.base.getChildren().add(base);
-		}
 		this.base = base;
 	}
 	public TreeItem<StackItem> getTop() {
