@@ -50,7 +50,7 @@ public class FileReader {
 				i.setInstruction(details[1]);
 				i.setLevel(Integer.parseInt(details[2]));
 				i.setOperand(Integer.parseInt(details[3]));
-				i.setDebug(createDebug(i.getInstruction(), i.getOperand()));
+				//i.setDebug(createDebug(i.getInstruction(), i.getOperand()));
 				return i;
 			}).collect(Collectors.toList());
 			ObservableList<Instruction> tableList = FXCollections.observableArrayList(list);

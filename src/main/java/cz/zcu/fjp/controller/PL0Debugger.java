@@ -74,6 +74,8 @@ public class PL0Debugger {
 				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), actual.getOperand())));
 				trySetTop(stackItems);
 				trySetPC(future);
+				
+				actual.setDebug("Push " + actual.getOperand() + " onto the stack");
 				break;
 			}
 			case "OPR": {
@@ -81,7 +83,6 @@ public class PL0Debugger {
 
 				switch (actual.getOperand()) {
 				case 0: { // return
-					// TODO implement level
 					break;
 				}
 				case 1: { // negate
@@ -186,6 +187,8 @@ public class PL0Debugger {
 				stackItems.add(item);
 				trySetTop(stackItems);
 				trySetPC(future);
+				
+				actual.setDebug("Load " + item.getValue().getValue() + " to top of stack");
 				break;
 			}
 			case "STO": {
@@ -195,6 +198,8 @@ public class PL0Debugger {
 				setItemOnLevel(actual.getLevel(), actual.getOperand(), new TreeItem<StackItem>(item));
 				trySetTop(stackItems);
 				trySetPC(future);
+				
+				actual.setDebug("Store " + item.getValue() + " to memory");
 				break;
 			}
 			case "CAL": {
@@ -211,6 +216,8 @@ public class PL0Debugger {
 				stack.setProgramCounter(actual.getOperand());
 
 				stackItemsToAdd = FXCollections.observableArrayList(item1, item2, item3);
+				
+				actual.setDebug("Call subroutine on index " + actual.getOperand() + " and level " + actual.getLevel());
 				break;
 			}
 			case "INT": {
@@ -258,12 +265,14 @@ public class PL0Debugger {
 				}
 
 				trySetPC(future);
+				actual.setDebug("Increment stack size by  " + actual.getOperand());
 				break;
 			}
 			case "JMP": {
 				future = tryGetInstruction(actual.getOperand(), instructions);
 
 				trySetPC(future);
+				actual.setDebug("Jump to the instruction at address " + actual.getOperand());
 				break;
 			}
 			case "JMC": {
@@ -277,6 +286,7 @@ public class PL0Debugger {
 				stackItems.remove(stackItems.size() - 1);
 				trySetTop(stackItems);
 				trySetPC(future);
+				actual.setDebug("Jump to the instruction at address " + actual.getOperand() + ", if value at top is 0");
 				break;
 			}
 			case "RET": {
@@ -295,6 +305,7 @@ public class PL0Debugger {
 
 					trySetTop(stack.getBase().getChildren());
 				}
+				actual.setDebug("Return from subroutine");
 				break;
 			}
 			}

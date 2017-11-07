@@ -219,6 +219,8 @@ public class MainController implements Initializable {
 			futureStack = pl0.getFutureStack();
 
 			int newPosition = now.getIndex();
+			tableInstructions.getColumns().get(0).setVisible(false);
+			tableInstructions.getColumns().get(0).setVisible(true);
 			tableInstructions.requestFocus();
 			tableInstructions.getSelectionModel().select(newPosition);
 			tableInstructions.getFocusModel().focus(newPosition);
