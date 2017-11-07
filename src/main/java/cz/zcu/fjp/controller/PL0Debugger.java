@@ -183,7 +183,6 @@ public class PL0Debugger {
 
 				TreeItem<StackItem> item = getItemOnLevel(actual.getLevel(), actual.getOperand());
 				item.getValue().setIndex(getNewIndex(stackItems));
-				;
 				stackItems.add(item);
 				trySetTop(stackItems);
 				trySetPC(future);
@@ -235,9 +234,12 @@ public class PL0Debugger {
 					stack.getRoot().getChildren().add(subroot);
 					stack.setBase(subroot);
 
+					//if (stackItemsToAdd.get(0).getValue() == stackItemsToAdd.get(1).getValue()) {
+						stack.setLevel(stack.getLevel() + 1);
+					//}
+
 					stackItemsToAdd.removeAll(stackItemsToAdd);
 
-					stack.setLevel(stack.getLevel() + 1);
 					trySetTop(subroot.getChildren());
 				} else {
 					int size = stackItems.size() + 1;
@@ -288,7 +290,7 @@ public class PL0Debugger {
 					trySetPC(future);
 
 					stack.setLevel(stack.getLevel() - 1);
-					stack.setBase(stack.getRoot().getChildren().get(stack.getLevel()));
+					stack.setBase(findBaseOnIndex(stack.getBase().getChildren().get(0).getValue().getValue()));
 					stack.getRoot().getChildren().remove(stack.getRoot().getChildren().size() - 1);
 
 					trySetTop(stack.getBase().getChildren());
@@ -299,6 +301,16 @@ public class PL0Debugger {
 		}
 
 		return future;
+	}
+
+	private TreeItem<StackItem> findBaseOnIndex(int index) {
+		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
+		for (TreeItem<StackItem> item : list) {
+			if (item.getValue().getIndex() == index) {
+				return item;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -314,7 +326,6 @@ public class PL0Debugger {
 		if (level > -1) {
 			list = list.get(level).getChildren();
 			log.info("level: " + level + ", list: " + list);
-			//level--;
 		}
 		return list;
 	}
@@ -390,18 +401,13 @@ public class PL0Debugger {
 	 */
 	private TreeItem<StackItem> getBase(int level) {
 		log.info("Getting new base on level: " + level);
-		//TreeItem<StackItem> newBase = stack.getBase();
-		//log.info("level: " + level + ", base: " + newBase + ", children: " + newBase.getChildren());
-		int oldIndex = stack.getRoot().getChildren().indexOf(stack.getBase());
-		//while (level > 0) {
-		//	newBase = newBase.getParent();
-		//	level--;
-		int newIndex = oldIndex - level;
-		log.info("Old index: " + oldIndex + ", new index: " + newIndex);
-		TreeItem<StackItem> newBase = stack.getRoot().getChildren().get(newIndex);
 		
+		TreeItem<StackItem> newBase = stack.getBase();
+		while (level > 0) {
+			newBase = findBaseOnIndex(newBase.getValue().getValue());
 			log.info("base: " + newBase + ", children: " + newBase.getChildren());
-		//}
+			level--;
+		}
 		return newBase;
 	}
 
@@ -435,7 +441,6 @@ public class PL0Debugger {
 	 */
 	private void setItemOnLevel(int level, int offset, TreeItem<StackItem> item) {
 		log.info("Setting item on level: " + level + " and offset: " + offset + ", item: " + item);
-		// item.getValue().setIndex(offset + 1);
 		TreeItem<StackItem> newBase = this.getBase(level);
 		item.getValue().setIndex(newBase.getValue().getIndex() + offset);
 		newBase.getChildren().set(offset - 1, item);
