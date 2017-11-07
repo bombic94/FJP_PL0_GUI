@@ -232,7 +232,7 @@ public class PL0Debugger {
 					for (int i = 1; i < stackItemsToAdd.size(); i++) {
 						subroot.getChildren().add(new TreeItem<StackItem>(stackItemsToAdd.get(i)));
 					}
-					stackItems.add(subroot);
+					stack.getRoot().getChildren().add(subroot);
 					stack.setBase(subroot);
 
 					stackItemsToAdd.removeAll(stackItemsToAdd);
@@ -287,14 +287,12 @@ public class PL0Debugger {
 							instructions);
 					trySetPC(future);
 
-					stack.setBase(stack.getBase().getParent());
-					stack.getBase().getChildren().remove(stack.getBase().getChildren().size() - 1);
+					stack.setLevel(stack.getLevel() - 1);
+					stack.setBase(stack.getRoot().getChildren().get(stack.getLevel()));
+					stack.getRoot().getChildren().remove(stack.getRoot().getChildren().size() - 1);
 
 					trySetTop(stack.getBase().getChildren());
-
-					stack.setLevel(stack.getLevel() - 1);
 				}
-
 				break;
 			}
 			}
@@ -313,10 +311,10 @@ public class PL0Debugger {
 		int level = stack.getLevel();
 		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
 		log.info("level: " + level + ", list: " + list);
-		while (level > -1) {
-			list = list.get(list.size() - 1).getChildren();
+		if (level > -1) {
+			list = list.get(level).getChildren();
 			log.info("level: " + level + ", list: " + list);
-			level--;
+			//level--;
 		}
 		return list;
 	}
@@ -392,14 +390,18 @@ public class PL0Debugger {
 	 */
 	private TreeItem<StackItem> getBase(int level) {
 		log.info("Getting new base on level: " + level);
-		TreeItem<StackItem> newBase = stack.getBase();
-		log.info("level: " + level + ", base: " + newBase + ", children: " + newBase.getChildren());
-		while (level > 0) {
-			newBase = newBase.getParent();
-			level--;
-
-			log.info("level: " + level + ", base: " + newBase + ", children: " + newBase.getChildren());
-		}
+		//TreeItem<StackItem> newBase = stack.getBase();
+		//log.info("level: " + level + ", base: " + newBase + ", children: " + newBase.getChildren());
+		int oldIndex = stack.getRoot().getChildren().indexOf(stack.getBase());
+		//while (level > 0) {
+		//	newBase = newBase.getParent();
+		//	level--;
+		int newIndex = oldIndex - level;
+		log.info("Old index: " + oldIndex + ", new index: " + newIndex);
+		TreeItem<StackItem> newBase = stack.getRoot().getChildren().get(newIndex);
+		
+			log.info("base: " + newBase + ", children: " + newBase.getChildren());
+		//}
 		return newBase;
 	}
 
