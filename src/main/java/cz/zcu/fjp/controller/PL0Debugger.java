@@ -26,6 +26,11 @@ public class PL0Debugger {
 
 	}
 
+	/**
+	 * Returns instance of PL0Debugger
+	 * 
+	 * @return PL0Debugger instance
+	 */
 	public static PL0Debugger getInstance() {
 		if (instance == null) {
 			instance = new PL0Debugger();
@@ -33,10 +38,25 @@ public class PL0Debugger {
 		return instance;
 	}
 
+	/**
+	 * Returns stack which is set by finding future instruction, so only return instance.
+	 * 
+	 * @return Stack for future instruction
+	 */
 	public Stack getFutureStack() {
 		return stack;
 	}
 
+	/**
+	 * Find out which instruction will be executed next.
+	 * Based on future instruction method sets stack information (PC, Top, Base, StackItems)
+	 * 
+	 * @param actual Instruction which is executed at the moment.
+	 * 
+	 * @param instructions ObservableList of instructions in table.
+	 * 
+	 * @return Future instruction
+	 */
 	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) {
 
 		ObservableList<TreeItem<StackItem>> stackItems = getActualList();
@@ -281,12 +301,6 @@ public class PL0Debugger {
 		}
 
 		return future;
-	}
-
-	private void setRoot(ObservableList<TreeItem<StackItem>> stackItems) {
-		TreeItem<StackItem> root = stack.getRoot();
-		root.setExpanded(true);
-		stack.setRoot(root);
 	}
 
 	/**

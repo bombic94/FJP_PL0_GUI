@@ -21,6 +21,11 @@ public class FileReader {
 
 	}
 
+	/**
+	 * Returns instance of FileReader
+	 * 
+	 * @return FileReader instance
+	 */
 	public static FileReader getInstance() {
 		if (instance == null) {
 			instance = new FileReader();
@@ -28,6 +33,13 @@ public class FileReader {
 		return instance;
 	}
 
+	/**
+	 * Accepts file with instructions and tries to parse it into ObservableList
+	 * 
+	 * @param file Table in txt file
+	 * 
+	 * @return Parsed file to ObservableList
+	 */
 	public ObservableList<Instruction> getTable(File file) {
 		Collection<Instruction> list = null;
 		try {
@@ -50,6 +62,15 @@ public class FileReader {
 		}
 	}
 
+	/**
+	 * For every line in table of instructions generates debug info based on instruction
+	 * 
+	 * @param instruction Instruction shortcut
+	 * 
+	 * @param operand for OPR instruction different debug based on operand
+	 * 
+	 * @return Debug String
+	 */
 	private String createDebug(String instruction, int operand) {
 		String debug = "";
 		switch (instruction) {

@@ -113,6 +113,10 @@ public class MainController implements Initializable {
 	 * Initialize GUI. Set default values to lables, init filechooser, add listener
 	 * to changed row in table, and init TreeTableView representing Stack
 	 * information
+	 * 
+	 * @param arg0 URL
+	 * 
+	 * @param arg1 ResourceBundle
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -236,6 +240,13 @@ public class MainController implements Initializable {
 		}
 	}
 
+	/**
+	 * Create deep copy of stack by copying root TreeItem
+	 * 
+	 * @param root Parent TreeItem
+	 * 
+	 * @return Copy of Parent TreeItem
+	 */
 	private TreeItem<StackItem> copy(TreeItem<StackItem> root) {
 		TreeItem<StackItem> copy = new TreeItem<StackItem>(root.getValue());
 		for (TreeItem<StackItem> child : root.getChildren()) {
@@ -245,6 +256,9 @@ public class MainController implements Initializable {
 		return copy;
 	}
 
+	/**
+	 * Reset view to default settings
+	 */
 	private void resetStackView() {
 
 		actualInstructionLabel.setText("-");
