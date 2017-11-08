@@ -49,7 +49,8 @@ public class PL0Debugger {
 
 	/**
 	 * Find out which instruction will be executed next.
-	 * Based on future instruction method sets stack information (PC, Top, Base, StackItems)
+	 * Based on future instruction method sets stack information (PC, Top, Base, StackItems).
+	 * Based on values with which program actually executed set Instruction debug information.
 	 * 
 	 * @param actual Instruction which is executed at the moment.
 	 * 
@@ -75,7 +76,7 @@ public class PL0Debugger {
 				trySetTop(stackItems);
 				trySetPC(future);
 				
-				actual.setDebug("Push " + actual.getOperand() + " onto the stack");
+				actual.setDebug("Push " + actual.getOperand() + " onto the top of stack");
 				break;
 			}
 			case OPR: {
@@ -144,7 +145,7 @@ public class PL0Debugger {
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					int returnValue = (item1.getValue() == item2.getValue()) ? 1 : 0;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision equal: " + item1.getValue() + " == " + item2.getValue() + " = " + returnValue);
+					actual.setDebug("Comparision equal: " + item1.getValue() + " == " + item2.getValue() + " --> " + returnValue);
 					break;
 				}
 				case 9: { // not equal
@@ -152,7 +153,7 @@ public class PL0Debugger {
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					int returnValue = (item1.getValue() != item2.getValue()) ? 1 : 0;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision not equal: " + item1.getValue() + " != " + item2.getValue() + " = " + returnValue);
+					actual.setDebug("Comparision not equal: " + item1.getValue() + " != " + item2.getValue() + " --> " + returnValue);
 					break;
 				}
 				case 10: { // less than
@@ -160,7 +161,7 @@ public class PL0Debugger {
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					int returnValue = (item1.getValue() < item2.getValue()) ? 1 : 0;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision less than: " + item1.getValue() + " < " + item2.getValue() + " = " + returnValue);
+					actual.setDebug("Comparision less than: " + item1.getValue() + " < " + item2.getValue() + " --> " + returnValue);
 					break;
 				}
 				case 11: { // greater than or equal
@@ -168,7 +169,7 @@ public class PL0Debugger {
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					int returnValue = (item1.getValue() >= item2.getValue()) ? 1 : 0;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision greater than or equal: " + item1.getValue() + " >= " + item2.getValue() + " = " + returnValue);
+					actual.setDebug("Comparision greater than or equal: " + item1.getValue() + " >= " + item2.getValue() + " --> " + returnValue);
 					break;
 				}
 				case 12: { // greater than
@@ -176,7 +177,7 @@ public class PL0Debugger {
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					int returnValue = (item1.getValue() > item2.getValue()) ? 1 : 0;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision greater than: " + item1.getValue() + " > " + item2.getValue() + " = " + returnValue);
+					actual.setDebug("Comparision greater than: " + item1.getValue() + " > " + item2.getValue() + " --> " + returnValue);
 					break;
 				}
 				case 13: { // less than or equal
@@ -184,7 +185,7 @@ public class PL0Debugger {
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					int returnValue = (item1.getValue() <= item2.getValue()) ? 1 : 0;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= " + item2.getValue() + " = " + returnValue);
+					actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= " + item2.getValue() + " --> " + returnValue);
 					break;
 				}
 				}
@@ -201,7 +202,7 @@ public class PL0Debugger {
 				trySetTop(stackItems);
 				trySetPC(future);
 				
-				actual.setDebug("Load " + item.getValue().getValue() + " to top of stack");
+				actual.setDebug("Load " + item.getValue().getValue() + " from position " + actual.getOperand() + ", " + actual.getLevel() + " levels up, to top of stack");
 				break;
 			}
 			case STO: {
@@ -212,7 +213,7 @@ public class PL0Debugger {
 				trySetTop(stackItems);
 				trySetPC(future);
 				
-				actual.setDebug("Store " + item.getValue() + " to memory");
+				actual.setDebug("Store " + item.getValue() + " to stack to position " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
 				break;
 			}
 			case CAL: {
@@ -225,12 +226,11 @@ public class PL0Debugger {
 				StackItem item3 = new StackItem(stack.getTop().getValue().getIndex() + 3,
 						stack.getProgramCounter() + 1);
 
-				// stack.setBase(stack.getTop());
 				stack.setProgramCounter(actual.getOperand());
 
 				stackItemsToAdd = FXCollections.observableArrayList(item1, item2, item3);
 				
-				actual.setDebug("Call subroutine on index " + actual.getOperand() + " and level " + actual.getLevel());
+				actual.setDebug("Call subroutine on index " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
 				break;
 			}
 			case INT: {
@@ -254,9 +254,7 @@ public class PL0Debugger {
 					stack.getRoot().getChildren().add(subroot);
 					stack.setBase(subroot);
 
-					//if (stackItemsToAdd.get(0).getValue() == stackItemsToAdd.get(1).getValue()) {
-						stack.setLevel(stack.getLevel() + 1);
-					//}
+					stack.setLevel(stack.getLevel() + 1);
 
 					stackItemsToAdd.removeAll(stackItemsToAdd);
 
@@ -307,6 +305,7 @@ public class PL0Debugger {
 				if (stack.getBase().getValue().getIndex() <= 1) {
 					future = null;
 					stack.setProgramCounter(-1);
+					actual.setDebug("Return from subroutine. End of program");
 				} else {
 					future = tryGetInstruction(stack.getBase().getChildren().get(1).getValue().getValue(),
 							instructions);
@@ -317,16 +316,26 @@ public class PL0Debugger {
 					stack.getRoot().getChildren().remove(stack.getRoot().getChildren().size() - 1);
 
 					trySetTop(stack.getBase().getChildren());
+					actual.setDebug("Return from subroutine. New base: [" + stack.getBase().getValue().getIndex() + ", " + stack.getBase().getValue().getValue() + "]");
 				}
-				actual.setDebug("Return from subroutine");
+				
 				break;
 			}
+			default:
+				break;
 			}
 		}
 
 		return future;
 	}
 
+	/**
+	 * Search through tree and look for base with given index
+	 * 
+	 * @param index Index of searched base
+	 * 
+	 * @return Base TreeItem
+	 */
 	private TreeItem<StackItem> findBaseOnIndex(int index) {
 		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
 		for (TreeItem<StackItem> item : list) {
