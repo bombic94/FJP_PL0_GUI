@@ -83,10 +83,13 @@ public class Stack {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Stack: ").append("Program counter - ").append(getProgramCounter()).append("Base - ")
-				.append(getBase().toString()).append("Top stack register - ").append(getTop().toString())
-				.append("StackItems - ").append(getStackItems().toString()).append("Root - ")
-				.append(getRoot().toString()).toString();
+		return new StringBuilder("Stack: ")
+				.append("Program counter - ").append(getProgramCounter())
+				.append(", Base - ").append(getBase().toString())
+				.append(", Top stack register - ").append(getTop().toString())
+				.append(", StackItems - ").append(getStackItems().toString())
+				.append(", Root - ").append(getRoot().toString())
+				.toString();
 	}
 
 }

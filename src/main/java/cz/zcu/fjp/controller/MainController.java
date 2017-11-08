@@ -29,7 +29,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
- * Main controll of UI. Comunicates with FXML and sets new values. Defines
+ * Main control of UI. Communicates with FXML and sets new values. Defines
  * methods reacting to events and actions.
  */
 public class MainController implements Initializable {
@@ -184,8 +184,14 @@ public class MainController implements Initializable {
 	@FXML
 	void reset(ActionEvent event) {
 		resetStackView();
-		tableInstructions.setItems(instructions);
 
+		for (Instruction i : instructions) {
+			i.setDebug("");
+		}
+		tableInstructions.setItems(instructions);
+		tableInstructions.getColumns().get(0).setVisible(false);
+		tableInstructions.getColumns().get(0).setVisible(true);
+		
 		tableInstructions.requestFocus();
 		tableInstructions.getSelectionModel().clearSelection();
 
@@ -271,6 +277,7 @@ public class MainController implements Initializable {
 		futureTopLabel.setText("-");
 		tableStateActual.setRoot(null);
 		tableStateFuture.setRoot(null);
+
 		rootCopy = null;
 		pl0.nullStack();
 	}

@@ -39,7 +39,9 @@ public class StackItem {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("StackItem: ").append("Index - ").append(getIndex()).append("Value - ")
-				.append(getValue()).toString();
+		return new StringBuilder("StackItem: ")
+				.append("Index - ").append(getIndex())
+				.append(", Value - ").append(getValue())
+				.toString();
 	}
 }

@@ -68,7 +68,7 @@ public class PL0Debugger {
 
 			log.info("Actual instruction: " + actual.toString());
 			switch (actual.getInstruction()) {
-			case "LIT": {
+			case LIT: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), actual.getOperand())));
@@ -78,7 +78,7 @@ public class PL0Debugger {
 				actual.setDebug("Push " + actual.getOperand() + " onto the stack");
 				break;
 			}
-			case "OPR": {
+			case OPR: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				switch (actual.getOperand()) {
@@ -192,7 +192,7 @@ public class PL0Debugger {
 				trySetPC(future);
 				break;
 			}
-			case "LOD": {
+			case LOD: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				TreeItem<StackItem> item = getItemOnLevel(actual.getLevel(), actual.getOperand());
@@ -204,7 +204,7 @@ public class PL0Debugger {
 				actual.setDebug("Load " + item.getValue().getValue() + " to top of stack");
 				break;
 			}
-			case "STO": {
+			case STO: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
@@ -215,7 +215,7 @@ public class PL0Debugger {
 				actual.setDebug("Store " + item.getValue() + " to memory");
 				break;
 			}
-			case "CAL": {
+			case CAL: {
 				future = tryGetInstruction(actual.getOperand(), instructions);
 
 				StackItem item1 = new StackItem(stack.getTop().getValue().getIndex() + 1,
@@ -233,7 +233,7 @@ public class PL0Debugger {
 				actual.setDebug("Call subroutine on index " + actual.getOperand() + " and level " + actual.getLevel());
 				break;
 			}
-			case "INT": {
+			case INT: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				if (stackItemsToAdd != null && !stackItemsToAdd.isEmpty()) {
@@ -281,14 +281,14 @@ public class PL0Debugger {
 				actual.setDebug("Increment stack size by  " + actual.getOperand());
 				break;
 			}
-			case "JMP": {
+			case JMP: {
 				future = tryGetInstruction(actual.getOperand(), instructions);
 
 				trySetPC(future);
 				actual.setDebug("Jump to the instruction at address " + actual.getOperand());
 				break;
 			}
-			case "JMC": {
+			case JMC: {
 
 				if (stack.getTop().getValue().getValue() == 0) {
 					future = tryGetInstruction(actual.getOperand(), instructions);
@@ -302,7 +302,7 @@ public class PL0Debugger {
 				actual.setDebug("Jump to the instruction at address " + actual.getOperand() + ", if value at top is 0");
 				break;
 			}
-			case "RET": {
+			case RET: {
 
 				if (stack.getBase().getValue().getIndex() <= 1) {
 					future = null;
