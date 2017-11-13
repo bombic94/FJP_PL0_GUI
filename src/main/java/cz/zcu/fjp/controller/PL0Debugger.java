@@ -357,7 +357,200 @@ public class PL0Debugger {
 			}
 			case OPF: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
+
+				switch (actual.getOperand()) {
+				case 0: { // return
+					break;
+				}
+				case 1: { // negate
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
+					double returnValue = d * (-1);
+					
+					int return1 = (int) returnValue;
+					int return2 = item2.getValue();
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+					actual.setDebug("Operation negate: " + d + " * (-1) = " + returnValue);
+					break;
+				}
+				case 2: { // sum
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					double returnValue = round(d1 + d2);
+					
+					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+					
+					actual.setDebug("Operation sum: " + d1 + " + " + d2 + " = " + returnValue);
+					break;
+				}
+				case 3: { // substract
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					double returnValue = round(d1 - d2);
+					
+					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+					
+					actual.setDebug("Operation substraction: " + d1 + " - " + d2 + " = " + returnValue);
+					break;
+				}
+				case 4: { // multiply
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					double returnValue = round(d1 * d2);
+					
+					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+					
+					actual.setDebug("Operation multiplication: " + d1 + " * " + d2 + " = " + returnValue);
+					break;
+				}
+				case 5: { // divide
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					double returnValue = round(d1 / d2);
+					
+					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+					
+					actual.setDebug("Operation division: " + d1 + " / " + d2 + " = " + returnValue);
+					break;
+				}
+				case 6: { // modulo - not implemented for floating point
+					break;
+				}
+				case 7: {// odd? - not implemented for floating point
+					break;
+				}
+				case 8: { // equal
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					int returnValue = (d1 == d2) ? 1 : 0;
+					
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+					actual.setDebug("Comparision equal: " + d1 + " == " + d2 + " --> " + returnValue);
+					break;
+				}
+				case 9: { // not equal
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					int returnValue = (d1 != d2) ? 1 : 0;
+					
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+					actual.setDebug("Comparision not equal: " + d1 + " != " + d2 + " --> " + returnValue);
+					break;
+				}
+				case 10: { // less than
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					int returnValue = (d1 < d2) ? 1 : 0;
+					
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+					actual.setDebug("Comparision less than: " + d1 + " < " + d2 + " --> " + returnValue);
+					break;
+				}
+				case 11: { // greater than or equal
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					int returnValue = (d1 >= d2) ? 1 : 0;
+					
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+					actual.setDebug("Comparision greater than or equal: " + d1 + " >= " + d2 + " --> " + returnValue);
+					break;
+				}
+				case 12: { // greater than
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					int returnValue = (d1 > d2) ? 1 : 0;
+					
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+					actual.setDebug("Comparision greater than: " + d1 + " > " + d2 + " --> " + returnValue);
+					break;
+				}
+				case 13: { // less than or equal
+					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					
+					int returnValue = (d1 <= d2) ? 1 : 0;
+					
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+					actual.setDebug("Comparision less than or equal: " + d1 + " <= " + d2 + " --> " + returnValue);
+					break;
+				}
+				}
+				trySetTop(stackItems);
+				trySetPC(future);
 				break;
 			}
 			case RTI: {
@@ -446,6 +639,14 @@ public class PL0Debugger {
 		getController().textWRI.setText(output);
 	}
 
+	public static double round(double value) {
+		int places = 2;
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
+	
 	/**
 	 * Search through tree and look for base with given index
 	 * 
