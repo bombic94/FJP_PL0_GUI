@@ -215,36 +215,45 @@ public class MainController implements Initializable {
 		actualTopLabel.setText(futureTopLabel.getText());
 		tableStateActual.setRoot(rootCopy);
 
-		future = pl0.getFutureInstruction(now, instructions);
+		try {
+			future = pl0.getFutureInstruction(now, instructions);
+			if (now == null) {
+				btnForward.setDisable(true);
 
-		if (now == null) {
-			btnForward.setDisable(true);
+				tableStateFuture.setRoot(null);
+			} else {
+				futureStack = pl0.getFutureStack();
 
-			tableStateFuture.setRoot(null);
-		} else {
-			futureStack = pl0.getFutureStack();
+				int newPosition = now.getIndex();
+				tableInstructions.getColumns().get(0).setVisible(false);
+				tableInstructions.getColumns().get(0).setVisible(true);
+				tableInstructions.requestFocus();
+				tableInstructions.getSelectionModel().select(newPosition);
+				tableInstructions.getFocusModel().focus(newPosition);
+			}
 
-			int newPosition = now.getIndex();
-			tableInstructions.getColumns().get(0).setVisible(false);
-			tableInstructions.getColumns().get(0).setVisible(true);
-			tableInstructions.requestFocus();
-			tableInstructions.getSelectionModel().select(newPosition);
-			tableInstructions.getFocusModel().focus(newPosition);
-		}
+			if (futureStack == null) {
+				futureInstructionLabel.setText("-");
+				futureBaseLabel.setText("-");
+				futureTopLabel.setText("-");
+			} else {
+				futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
+				futureBaseLabel.setText("[" + futureStack.getBase().getValue().getIndex() + ", "
+						+ futureStack.getBase().getValue().getValue() + "]");
+				futureTopLabel.setText("[" + futureStack.getTop().getValue().getIndex() + ", "
+						+ futureStack.getTop().getValue().getValue() + "]");
 
-		if (futureStack == null) {
-			futureInstructionLabel.setText("-");
-			futureBaseLabel.setText("-");
-			futureTopLabel.setText("-");
-		} else {
-			futureInstructionLabel.setText(futureStack.getProgramCounter() + "");
-			futureBaseLabel.setText("[" + futureStack.getBase().getValue().getIndex() + ", "
-					+ futureStack.getBase().getValue().getValue() + "]");
-			futureTopLabel.setText("[" + futureStack.getTop().getValue().getIndex() + ", "
-					+ futureStack.getTop().getValue().getValue() + "]");
-
-			rootCopy = copy(futureStack.getRoot());
-			tableStateFuture.setRoot(rootCopy);
+				rootCopy = copy(futureStack.getRoot());
+				tableStateFuture.setRoot(rootCopy);
+			}
+		} catch (Exception e){
+			reset(event);
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Error has happened during execution of instructions");
+			alert.setContentText(
+					"Please check that instruction does not contain reference to non-existing location");
+			alert.showAndWait();
 		}
 	}
 
