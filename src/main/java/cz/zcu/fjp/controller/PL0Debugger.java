@@ -363,11 +363,30 @@ public class PL0Debugger {
 			case RTI: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
+				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+				
+				double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
+				int i = Integer.valueOf((int) Math.round(d));
+				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), i)));
+				
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Parse real (" + d + ") to int (" + i + ")");
 				break;
 			}
 			case ITR: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
+				StackItem item = stackItems.get(stackItems.size() - 1).getValue();
+				
+				int i = item.getValue();
+				double d = Double.parseDouble(i + "." + 0);
+				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), 0)));
+				
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Parse int (" + i + ") to real (" + d + ")");
 				break;
 			}
 			case NEW: {
