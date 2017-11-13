@@ -9,6 +9,8 @@ import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
@@ -99,6 +102,12 @@ public class MainController implements Initializable {
 
 	@FXML
 	private Button btnLoad;
+	
+	@FXML
+	public TextField textREA;
+	
+	@FXML
+	public TextField textWRI;
 
 	private File file;
 	private FileChooser fileChooser;
@@ -141,6 +150,8 @@ public class MainController implements Initializable {
                 event.consume();
             }
         });
+		
+		pl0.setController(this);
 	}
 
 	/**
@@ -286,6 +297,8 @@ public class MainController implements Initializable {
 		futureTopLabel.setText("-");
 		tableStateActual.setRoot(null);
 		tableStateFuture.setRoot(null);
+		textREA.setText("");
+		textWRI.setText("");
 
 		rootCopy = null;
 		pl0.nullStack();

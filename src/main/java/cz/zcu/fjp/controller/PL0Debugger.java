@@ -20,6 +20,7 @@ public class PL0Debugger {
 	private static PL0Debugger instance = null;
 
 	private Stack stack = new Stack();
+	private MainController controller;
 	private ObservableList<StackItem> stackItemsToAdd;// = FXCollections.observableArrayList();
 
 	protected PL0Debugger() {
@@ -38,6 +39,14 @@ public class PL0Debugger {
 		return instance;
 	}
 
+	public void setController(MainController mainController) {
+		controller = mainController;
+	}
+	
+	public MainController getController() {
+		return controller;
+	}
+	
 	/**
 	 * Returns stack which is set by finding future instruction, so only return instance.
 	 * 
@@ -324,18 +333,27 @@ public class PL0Debugger {
 			case REA: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
-				String input = "Ahoj";
-				char character = input.charAt(0); // This gives the character 'a'
+				char character = readChar();
 				int ascii = (int) character;
 				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), ascii)));
+
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Save ASCII code of char at input: Char: " + character + ", ASCII: " + ascii);
 				break;
 			}
 			case WRI: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
 				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-				char character = (char) item.getValue();
-				System.out.println(Character.toString(character));
+				int ascii = item.getValue();
+				char character = (char) ascii;
+				writeChar(character);
+
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Write char from ASCII code to output: Char: " + character + ", ASCII: " + ascii);
+				break;
 			}
 			case OPF: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
@@ -388,6 +406,25 @@ public class PL0Debugger {
 		}
 
 		return future;
+	}
+
+	private char readChar() {
+		String input = getController().textREA.getText();
+		if (input.isEmpty()) {
+			getController().textREA.setText("");
+			input = "?";		
+			log.info("Input was empty, parsing default value of \"?\"");
+		} else {
+			getController().textREA.setText(input.substring(1));
+			input = input.substring(0, 1);	
+		}
+		return input.charAt(0);
+	}
+	
+	private void writeChar(char ch){
+		String output = getController().textWRI.getText();
+		output = output + String.valueOf(ch);
+		getController().textWRI.setText(output);
 	}
 
 	/**
