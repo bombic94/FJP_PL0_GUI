@@ -6,6 +6,7 @@ package cz.zcu.fjp.model;
  */
 public enum InstructionEnum {
 	EMPTY(""),
+	//basic functions
 	LIT("LIT"), 
 	OPR("OPR"), 
 	LOD("LOD"), 
@@ -14,7 +15,19 @@ public enum InstructionEnum {
 	INT("INT"), 
 	JMP("JMP"), 
 	JMC("JMC"), 
-	RET("RET");
+	RET("RET"),
+	//extended functions
+	REA("REA"),
+	WRI("WRI"),
+	OPF("OPF"),
+	RTI("RTI"),
+	ITR("ITR"),
+	NEW("NEW"),
+	DEL("DEL"),
+	LDA("LDA"),
+	STA("STA"),
+	PLD("PLD"),
+	PST("PST");
 
 	final private String instructionE;
 	

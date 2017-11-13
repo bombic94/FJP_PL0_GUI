@@ -321,6 +321,67 @@ public class PL0Debugger {
 				
 				break;
 			}
+			case REA: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				String input = "Ahoj";
+				char character = input.charAt(0); // This gives the character 'a'
+				int ascii = (int) character;
+				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), ascii)));
+				break;
+			}
+			case WRI: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
+				char character = (char) item.getValue();
+				System.out.println(Character.toString(character));
+			}
+			case OPF: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case RTI: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case ITR: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case NEW: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case DEL: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case LDA: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case STA: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case PLD: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
+			case PST: {
+				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				
+				break;
+			}
 			default:
 				break;
 			}
