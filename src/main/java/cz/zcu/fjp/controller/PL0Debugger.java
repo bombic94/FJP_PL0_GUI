@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import cz.zcu.fjp.model.ExceptionEnum;
 import cz.zcu.fjp.model.Heap;
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
@@ -98,7 +99,8 @@ public class PL0Debugger {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				switch (actual.getOperand()) {
-				case 0: { // return
+				case 0: {
+					controller.alert(ExceptionEnum.UNKNOWN_INST);
 					break;
 				}
 				case 1: { // negate
@@ -202,6 +204,9 @@ public class PL0Debugger {
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 					actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= " + item2.getValue() + " --> " + returnValue);
 					break;
+				}
+				default: {
+					controller.alert(ExceptionEnum.UNKNOWN_INST);
 				}
 				}
 				trySetTop(stackItems);
@@ -365,7 +370,8 @@ public class PL0Debugger {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
 				switch (actual.getOperand()) {
-				case 0: { // return
+				case 0: {
+					controller.alert(ExceptionEnum.UNKNOWN_INST);
 					break;
 				}
 				case 1: { // negate
@@ -459,9 +465,11 @@ public class PL0Debugger {
 					break;
 				}
 				case 6: { // modulo - not implemented for floating point
+					controller.alert(ExceptionEnum.UNKNOWN_INST);
 					break;
 				}
 				case 7: {// odd? - not implemented for floating point
+					controller.alert(ExceptionEnum.UNKNOWN_INST);
 					break;
 				}
 				case 8: { // equal
@@ -553,6 +561,9 @@ public class PL0Debugger {
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 					actual.setDebug("Comparision less than or equal: " + d1 + " <= " + d2 + " --> " + returnValue);
 					break;
+				}
+				default: {
+					controller.alert(ExceptionEnum.UNKNOWN_INST);
 				}
 				}
 				trySetTop(stackItems);
@@ -682,6 +693,7 @@ public class PL0Debugger {
 				break;
 			}
 			default:
+				controller.alert(ExceptionEnum.UNKNOWN_INST);
 				break;
 			}
 		}
