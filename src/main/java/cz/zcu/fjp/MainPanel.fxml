@@ -130,12 +130,12 @@
                                                         <columns>
                                                           <TableColumn fx:id="heapColumnIndex" editable="false" prefWidth="${tableHeap.width * 0.50}" sortable="false" text="Index">
                                                           	<cellValueFactory>
-                                                                  <TreeItemPropertyValueFactory property="index" />
+                                                                  <PropertyValueFactory property="index" />
   															</cellValueFactory>
   														  </TableColumn>
                                                           <TableColumn fx:id="heapColumnValue" editable="false" prefWidth="${tableHeap.width * 0.50}" sortable="false" text="Value">
                                                           	<cellValueFactory>
-                                                                  <TreeItemPropertyValueFactory property="value" />
+                                                                  <PropertyValueFactory property="value" />
   															</cellValueFactory>
   														  </TableColumn>
                                                         </columns>

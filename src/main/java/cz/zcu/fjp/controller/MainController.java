@@ -269,6 +269,8 @@ public class MainController implements Initializable {
 
 				rootCopy = copy(futureStack.getRoot());
 				tableStateFuture.setRoot(rootCopy);
+				
+				tableHeap.setItems(pl0.getHeap());
 			}
 		} catch (Exception e){
 			reset(event);

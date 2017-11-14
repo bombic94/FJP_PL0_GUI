@@ -1,7 +1,11 @@
 package cz.zcu.fjp.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
+import cz.zcu.fjp.model.Heap;
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
@@ -22,6 +26,8 @@ public class PL0Debugger {
 	private Stack stack = new Stack();
 	private MainController controller;
 	private ObservableList<StackItem> stackItemsToAdd;// = FXCollections.observableArrayList();
+	private List<Integer> heapList = new ArrayList<Integer>();
+	private ObservableList<Heap> heap;
 
 	protected PL0Debugger() {
 
@@ -585,11 +591,27 @@ public class PL0Debugger {
 			case NEW: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
+				heapList.add(0);
+				
+				int returnValue = heapList.size() - 1;
+				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+				
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Allocation of space in heap. Address of alocated cell: " + returnValue);
 				break;
 			}
 			case DEL: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
+				heapList.remove(heapList.size() - 1);
+				
+				int returnValue = heapList.size();
+				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+				
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Deallocation of space in heap. Address of dealocated cell: " + returnValue);
 				break;
 			}
 			case LDA: {
@@ -808,5 +830,14 @@ public class PL0Debugger {
 		int newIndex = stackItems.get(stackItems.size() - 1).getValue().getIndex() + 1;
 		log.info("Getting new index for new item: " + newIndex);
 		return newIndex;
+	}
+
+	public ObservableList<Heap> getHeap() {
+		heap = FXCollections.observableArrayList();
+		for (int i = 0; i < heapList.size(); i++) {
+			int value = heapList.get(i);
+			heap.add(new Heap(i, value));
+		}
+		return heap;
 	}
 }
