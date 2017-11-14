@@ -2,6 +2,7 @@
 
 <?import cz.zcu.fjp.model.Instruction?>
 <?import cz.zcu.fjp.model.Stack?>
+<?import cz.zcu.fjp.model.Heap?>
 
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
@@ -36,7 +37,7 @@
                                             <content>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="152.0">
                                                    <children>
-                                                      <TreeTableView fx:id="tableStateActual" layoutX="17.6" layoutY="46.6" prefHeight="505.0" prefWidth="152.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <TreeTableView fx:id="tableStateActual" layoutX="17.6" layoutY="46.6" prefHeight="672.0" prefWidth="161.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <placeholder>
 													        <Label text="No items in stack" />
 													    </placeholder>
@@ -74,7 +75,7 @@
                                             <content>
                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                    <children>
-                                                      <TreeTableView fx:id="tableStateFuture" prefHeight="465.0" prefWidth="147.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <TreeTableView fx:id="tableStateFuture" layoutX="17.6" layoutY="46.6" prefHeight="672.0" prefWidth="161.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <placeholder>
 													        <Label text="No items in stack" />
 													    </placeholder>
@@ -112,43 +113,82 @@
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
-                              <TableView fx:id="tableInstructions" layoutX="131.0" layoutY="99.0" prefHeight="493.0" prefWidth="462.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <placeholder>
-							        <Label text="No instructions" />
-							    </placeholder>
-                                <columns>
-                                  <TableColumn fx:id="columnIndex" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Index">
-                                  	<cellValueFactory>
-                                          <PropertyValueFactory property="index" />
-  									</cellValueFactory>
-                                  </TableColumn>
-                                  <TableColumn fx:id="columnInstruction" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Instruction">
-                                  	<cellValueFactory>
-                                          <PropertyValueFactory property="instruction" />
-  									</cellValueFactory>
-                                  </TableColumn>
-                                  <TableColumn fx:id="columnLevel" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Level">
-                                  	<cellValueFactory>
-                                          <PropertyValueFactory property="level" />
-  									</cellValueFactory>
-                                  </TableColumn>
-                                  <TableColumn fx:id="columnOperand" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Operand">
-                                  	<cellValueFactory>
-                                          <PropertyValueFactory property="operand" />
-  									</cellValueFactory>
-                                  </TableColumn>
-                                  <TableColumn fx:id="columnInfo" editable="false" prefWidth="${tableInstructions.width * 0.48}" sortable="false" text="Debug">
-                                  	<cellValueFactory>
-                                          <PropertyValueFactory property="debug" />
-  									</cellValueFactory>
-                                  </TableColumn>
-                                </columns>
+                              <SplitPane dividerPositions="0.15" prefHeight="700.0" prefWidth="680.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
-										    <FXCollections fx:factory="observableArrayList">
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" maxWidth="100.0" SplitPane.resizableWithParent="false">
+                                       <children>
+                                          <TitledPane animated="false" collapsible="false" prefHeight="491.0" prefWidth="100.0" text="Heap" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <content>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                      <Label layoutX="10.0" layoutY="6.0" text="Heap size: " />
+                                                      <Label fx:id="heapSizeLabel" layoutX="70.0" layoutY="6.0" />
+                                                      <TableView fx:id="tableHeap" layoutY="60.0" prefHeight="612.0" prefWidth="96.0">
+                                                        <placeholder>
+													        <Label text="No items in heap" />
+													    </placeholder>
+                                                        <columns>
+                                                          <TableColumn fx:id="heapColumnIndex" editable="false" prefWidth="${tableHeap.width * 0.50}" sortable="false" text="Index">
+                                                          	<cellValueFactory>
+                                                                  <TreeItemPropertyValueFactory property="index" />
+  															</cellValueFactory>
+  														  </TableColumn>
+                                                          <TableColumn fx:id="heapColumnValue" editable="false" prefWidth="${tableHeap.width * 0.50}" sortable="false" text="Value">
+                                                          	<cellValueFactory>
+                                                                  <TreeItemPropertyValueFactory property="value" />
+  															</cellValueFactory>
+  														  </TableColumn>
+                                                        </columns>
+                                                      </TableView>
+                                                   </children>
+                                                </AnchorPane>
+                                            </content>
+                                          </TitledPane>
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                       <children>
+                                          <TableView fx:id="tableInstructions" prefHeight="698.0" prefWidth="573.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <placeholder>
+            							        <Label text="No instructions" />
+            							    </placeholder>
+                                            <columns>
+                                              <TableColumn fx:id="columnIndex" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Index">
+                                              	<cellValueFactory>
+                                                      <PropertyValueFactory property="index" />
+              									</cellValueFactory>
+                                              </TableColumn>
+                                              <TableColumn fx:id="columnInstruction" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Instruction">
+                                              	<cellValueFactory>
+                                                      <PropertyValueFactory property="instruction" />
+              									</cellValueFactory>
+                                              </TableColumn>
+                                              <TableColumn fx:id="columnLevel" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Level">
+                                              	<cellValueFactory>
+                                                      <PropertyValueFactory property="level" />
+              									</cellValueFactory>
+                                              </TableColumn>
+                                              <TableColumn fx:id="columnOperand" editable="false" prefWidth="${tableInstructions.width * 0.125}" sortable="false" text="Operand">
+                                              	<cellValueFactory>
+                                                      <PropertyValueFactory property="operand" />
+              									</cellValueFactory>
+                                              </TableColumn>
+                                              <TableColumn fx:id="columnInfo" editable="false" prefWidth="${tableInstructions.width * 0.48}" sortable="false" text="Debug">
+                                              	<cellValueFactory>
+                                                      <PropertyValueFactory property="debug" />
+              									</cellValueFactory>
+                                              </TableColumn>
+                                            </columns>
+                                            <items>
+            										    <FXCollections fx:factory="observableArrayList">
 										    	
 										    </FXCollections>
-									  </items>
-                              </TableView>
+            									  </items>
+                                          </TableView>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
                            </children>
                         </AnchorPane>
                     </items>

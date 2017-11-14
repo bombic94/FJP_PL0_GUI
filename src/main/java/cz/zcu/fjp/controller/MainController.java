@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import cz.zcu.fjp.model.Heap;
 import cz.zcu.fjp.model.Instruction;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
@@ -57,6 +58,9 @@ public class MainController implements Initializable {
 
 	@FXML
 	private Label actualTopLabel;
+	
+	@FXML
+	private Label heapSizeLabel;
 
 	@FXML
 	private TreeTableView<StackItem> tableStateActual;
@@ -94,6 +98,15 @@ public class MainController implements Initializable {
 	@FXML
 	private TableColumn<Instruction, SimpleStringProperty> columnInfo;
 
+	@FXML
+	private TableView<Heap> tableHeap;
+	
+	@FXML
+	private TableColumn<Heap, SimpleIntegerProperty> heapColumnIndex;
+	
+	@FXML
+	private TableColumn<Heap, SimpleIntegerProperty> heapColumnValue;
+	
 	@FXML
 	private Button btnForward;
 
