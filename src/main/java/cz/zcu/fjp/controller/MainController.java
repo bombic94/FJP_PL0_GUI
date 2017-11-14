@@ -219,6 +219,7 @@ public class MainController implements Initializable {
 		tableInstructions.requestFocus();
 		tableInstructions.getSelectionModel().clearSelection();
 
+		tableHeap.setItems(null);
 		future = pl0.getFutureInstruction(null, instructions);
 
 		btnForward.setDisable(false);

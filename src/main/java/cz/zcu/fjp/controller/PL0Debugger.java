@@ -617,21 +617,68 @@ public class PL0Debugger {
 			case LDA: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
+				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
+				
+				int address = item.getValue();
+				int returnValue = heapList.get(address);
+				
+				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+				
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Find cell in heap on address: " + address + ". Cell value: " + returnValue);
 				break;
 			}
 			case STA: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
 				
+				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+				
+				int address = item2.getValue();
+				int value = item1.getValue();
+				
+				heapList.set(address, value);
+				
+				trySetTop(stackItems);
+				trySetPC(future);
+				actual.setDebug("Set cell in heap on address: " + address + ". Cell new value: " + value);
 				break;
 			}
 			case PLD: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 				
+				int level = item1.getValue();
+				int position = item2.getValue();
+				
+				TreeItem<StackItem> item = getItemOnLevel(level, position);
+				item.getValue().setIndex(getNewIndex(stackItems));
+				stackItems.add(item);
+				trySetTop(stackItems);
+				trySetPC(future);
+				
+				actual.setDebug("Load " + item.getValue().getValue() + " from position " + position + ", " + level + " levels up, to top of stack");
 				break;
 			}
 			case PST: {
 				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+				StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 				
+				int level = item2.getValue();
+				int position = item3.getValue();
+				StackItem item = new StackItem(0, item1.getValue());
+				
+				setItemOnLevel(level, position, new TreeItem<StackItem>(item));
+				trySetTop(stackItems);
+				trySetPC(future);
+				
+				actual.setDebug("Store " + item.getValue() + " to stack to position " + position + ", " + level + " levels up");
 				break;
 			}
 			default:
@@ -738,8 +785,10 @@ public class PL0Debugger {
 	 * Set stack to null when reset is pressed or when new file is loaded
 	 */
 	public void nullStack() {
-		log.info("Reset stack");
+		log.info("Reset stack and heap");
 		stack = new Stack();
+		heap = null;
+		heapList = new ArrayList<Integer>();
 	}
 
 	/**
