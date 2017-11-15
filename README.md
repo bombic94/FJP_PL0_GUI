@@ -15,6 +15,7 @@ mvn clean package
 ```
 
 Then run the built "PL0 Debugger.jar" file in root directory
+
 Examples of instruction tables are in folder ./resources/testFiles
 
 ## Usage
@@ -39,25 +40,25 @@ Button *Reset* resets program to first instruction.
 ## List of possible instructions
 Instructions can contain parameters L (level) and A (argument). 0 indicates, that this argument must be always 0.
 ```
-	LIT 0 A
-	OPR 0 A
-	LOD L A
-	STO L A
-	CAL L A
-	INT 0 A
-	JMP 0 A
-	JMC 0 A
-	RET 0 0
-  
-	REA 0 0
-	WRI 0 0
-	OPF 0 A
-	RTI 0 0
-	ITR 0 0
-	NEW 0 0
-	DEL 0 0
-	LDA 0 0
-	STA 0 0
-	PLD 0 0
-	PST 0 0
+LIT 0 A
+OPR 0 A
+LOD L A
+STO L A
+CAL L A
+INT 0 A
+JMP 0 A
+JMC 0 A
+RET 0 0
+
+REA 0 0
+WRI 0 0
+OPF 0 A
+RTI 0 0
+ITR 0 0
+NEW 0 0
+DEL 0 0
+LDA 0 0
+STA 0 0
+PLD 0 0
+PST 0 0
 ```
