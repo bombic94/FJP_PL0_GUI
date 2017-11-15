@@ -14,12 +14,12 @@ public class MainFrame extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("MainPanel.fxml"));
+			Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("MainPanel.fxml"));
 			Scene scene = new Scene(root, 1024, 768);
 			primaryStage.setTitle("PL/0 interpreter");
 			primaryStage.setMinHeight(600);
 			primaryStage.setMinWidth(800);
-			scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getClassLoader().getResource("bootstrap3.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (Exception e) {
