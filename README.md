@@ -11,10 +11,11 @@ Program can simulate operation with data in heap, I/O operations and dynamic ope
 ## Installation
 Download project and in program root directory execute
 ```
-mvn clean install
+mvn clean package
 ```
 
-Then run the built .jar file.
+Then run the built "PL0 Debugger.jar" file in root directory
+Examples of instruction tables are in folder ./resources/testFiles
 
 ## Usage
 In GUI press the *Load file* button and choose file with code table (as below). Right now program only supports .txt files.
