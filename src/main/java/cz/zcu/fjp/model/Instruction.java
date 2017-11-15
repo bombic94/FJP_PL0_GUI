@@ -51,7 +51,7 @@ public class Instruction {
 	public void setInstruction(InstructionEnum instruction) {
 		this.instruction = instruction;
 	}
-	
+
 	public void setInstruction(String instruction) {
 		this.instruction = InstructionEnum.valueOf(instruction);
 	}

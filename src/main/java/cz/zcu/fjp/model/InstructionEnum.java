@@ -1,6 +1,5 @@
 package cz.zcu.fjp.model;
 
-
 /**
  * Enum represents list of instructions possible to execute
  */
@@ -30,7 +29,7 @@ public enum InstructionEnum {
 	PST("PST");
 
 	final private String instructionE;
-	
+
 	InstructionEnum(String instructionE) {
 		this.instructionE = instructionE;
 	}

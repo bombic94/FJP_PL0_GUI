@@ -50,13 +50,14 @@ public class PL0Debugger {
 	public void setController(MainController mainController) {
 		controller = mainController;
 	}
-	
+
 	public MainController getController() {
 		return controller;
 	}
-	
+
 	/**
-	 * Returns stack which is set by finding future instruction, so only return instance.
+	 * Returns stack which is set by finding future instruction, so only return
+	 * instance.
 	 * 
 	 * @return Stack for future instruction
 	 */
@@ -65,18 +66,21 @@ public class PL0Debugger {
 	}
 
 	/**
-	 * Find out which instruction will be executed next.
-	 * Based on future instruction method sets stack information (PC, Top, Base, StackItems).
-	 * Based on values with which program actually executed set Instruction debug information.
+	 * Find out which instruction will be executed next. Based on future instruction
+	 * method sets stack information (PC, Top, Base, StackItems). Based on values
+	 * with which program actually executed set Instruction debug information.
 	 * 
-	 * @param actual Instruction which is executed at the moment.
+	 * @param actual
+	 *            Instruction which is executed at the moment.
 	 * 
-	 * @param instructions ObservableList of instructions in table.
+	 * @param instructions
+	 *            ObservableList of instructions in table.
 	 * 
 	 * @return Future instruction
-	 * @throws MyException 
+	 * @throws MyException
 	 */
-	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) throws MyException {
+	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions)
+			throws MyException {
 
 		ObservableList<TreeItem<StackItem>> stackItems = getActualList();
 
@@ -91,10 +95,11 @@ public class PL0Debugger {
 				case LIT: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), actual.getOperand())));
+					stackItems
+							.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), actual.getOperand())));
 					trySetTop(stackItems);
 					trySetPC(future);
-					
+
 					actual.setDebug("Push " + actual.getOperand() + " onto the top of stack");
 					break;
 				}
@@ -117,7 +122,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = item1.getValue() + item2.getValue();
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Operation sum: " + item1.getValue() + " + " + item2.getValue() + " = " + returnValue);
+						actual.setDebug(
+								"Operation sum: " + item1.getValue() + " + " + item2.getValue() + " = " + returnValue);
 						break;
 					}
 					case 3: { // substract
@@ -125,7 +131,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = item1.getValue() - item2.getValue();
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Operation substraction: " + item1.getValue() + " - " + item2.getValue() + " = " + returnValue);
+						actual.setDebug("Operation substraction: " + item1.getValue() + " - " + item2.getValue() + " = "
+								+ returnValue);
 						break;
 					}
 					case 4: { // multiply
@@ -133,7 +140,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = item1.getValue() * item2.getValue();
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Operation multiplication: " + item1.getValue() + " * " + item2.getValue() + " = " + returnValue);
+						actual.setDebug("Operation multiplication: " + item1.getValue() + " * " + item2.getValue()
+								+ " = " + returnValue);
 						break;
 					}
 					case 5: { // divide
@@ -141,7 +149,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = item1.getValue() / item2.getValue();
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Operation division: " + item1.getValue() + " / " + item2.getValue() + " = " + returnValue);
+						actual.setDebug("Operation division: " + item1.getValue() + " / " + item2.getValue() + " = "
+								+ returnValue);
 						break;
 					}
 					case 6: { // modulo
@@ -149,14 +158,16 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = item1.getValue() % item2.getValue();
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Operation modulo: " + item1.getValue() + " % " + item2.getValue() + " = " + returnValue);
+						actual.setDebug("Operation modulo: " + item1.getValue() + " % " + item2.getValue() + " = "
+								+ returnValue);
 						break;
 					}
 					case 7: {// odd?
 						StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = item.getValue() % 2;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Test if " + item.getValue() + " is odd: " + item.getValue() + " % 2 = " + returnValue);
+						actual.setDebug(
+								"Test if " + item.getValue() + " is odd: " + item.getValue() + " % 2 = " + returnValue);
 						break;
 					}
 					case 8: { // equal
@@ -164,7 +175,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = (item1.getValue() == item2.getValue()) ? 1 : 0;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision equal: " + item1.getValue() + " == " + item2.getValue() + " --> " + returnValue);
+						actual.setDebug("Comparision equal: " + item1.getValue() + " == " + item2.getValue() + " --> "
+								+ returnValue);
 						break;
 					}
 					case 9: { // not equal
@@ -172,7 +184,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = (item1.getValue() != item2.getValue()) ? 1 : 0;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision not equal: " + item1.getValue() + " != " + item2.getValue() + " --> " + returnValue);
+						actual.setDebug("Comparision not equal: " + item1.getValue() + " != " + item2.getValue()
+								+ " --> " + returnValue);
 						break;
 					}
 					case 10: { // less than
@@ -180,7 +193,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = (item1.getValue() < item2.getValue()) ? 1 : 0;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision less than: " + item1.getValue() + " < " + item2.getValue() + " --> " + returnValue);
+						actual.setDebug("Comparision less than: " + item1.getValue() + " < " + item2.getValue()
+								+ " --> " + returnValue);
 						break;
 					}
 					case 11: { // greater than or equal
@@ -188,7 +202,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = (item1.getValue() >= item2.getValue()) ? 1 : 0;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision greater than or equal: " + item1.getValue() + " >= " + item2.getValue() + " --> " + returnValue);
+						actual.setDebug("Comparision greater than or equal: " + item1.getValue() + " >= "
+								+ item2.getValue() + " --> " + returnValue);
 						break;
 					}
 					case 12: { // greater than
@@ -196,7 +211,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = (item1.getValue() > item2.getValue()) ? 1 : 0;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision greater than: " + item1.getValue() + " > " + item2.getValue() + " --> " + returnValue);
+						actual.setDebug("Comparision greater than: " + item1.getValue() + " > " + item2.getValue()
+								+ " --> " + returnValue);
 						break;
 					}
 					case 13: { // less than or equal
@@ -204,7 +220,8 @@ public class PL0Debugger {
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 						int returnValue = (item1.getValue() <= item2.getValue()) ? 1 : 0;
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= " + item2.getValue() + " --> " + returnValue);
+						actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= "
+								+ item2.getValue() + " --> " + returnValue);
 						break;
 					}
 					default: {
@@ -223,8 +240,9 @@ public class PL0Debugger {
 					stackItems.add(item);
 					trySetTop(stackItems);
 					trySetPC(future);
-					
-					actual.setDebug("Load " + item.getValue().getValue() + " from position " + actual.getOperand() + ", " + actual.getLevel() + " levels up, to top of stack");
+
+					actual.setDebug("Load " + item.getValue().getValue() + " from position " + actual.getOperand()
+							+ ", " + actual.getLevel() + " levels up, to top of stack");
 					break;
 				}
 				case STO: {
@@ -234,8 +252,9 @@ public class PL0Debugger {
 					setItemOnLevel(actual.getLevel(), actual.getOperand(), new TreeItem<StackItem>(item));
 					trySetTop(stackItems);
 					trySetPC(future);
-					
-					actual.setDebug("Store " + item.getValue() + " to stack to position " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
+
+					actual.setDebug("Store " + item.getValue() + " to stack to position " + actual.getOperand() + ", "
+							+ actual.getLevel() + " levels up");
 					break;
 				}
 				case CAL: {
@@ -251,8 +270,9 @@ public class PL0Debugger {
 					stack.setProgramCounter(actual.getOperand());
 
 					stackItemsToAdd = FXCollections.observableArrayList(item1, item2, item3);
-					
-					actual.setDebug("Call subroutine on index " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
+
+					actual.setDebug("Call subroutine on index " + actual.getOperand() + ", " + actual.getLevel()
+							+ " levels up");
 					break;
 				}
 				case INT: {
@@ -319,7 +339,8 @@ public class PL0Debugger {
 					stackItems.remove(stackItems.size() - 1);
 					trySetTop(stackItems);
 					trySetPC(future);
-					actual.setDebug("Jump to the instruction at address " + actual.getOperand() + ", if value at top is 0");
+					actual.setDebug(
+							"Jump to the instruction at address " + actual.getOperand() + ", if value at top is 0");
 					break;
 				}
 				case RET: {
@@ -338,16 +359,17 @@ public class PL0Debugger {
 						stack.getRoot().getChildren().remove(stack.getRoot().getChildren().size() - 1);
 
 						trySetTop(stack.getBase().getChildren());
-						actual.setDebug("Return from subroutine. New base: [" + stack.getBase().getValue().getIndex() + ", " + stack.getBase().getValue().getValue() + "]");
+						actual.setDebug("Return from subroutine. New base: [" + stack.getBase().getValue().getIndex()
+								+ ", " + stack.getBase().getValue().getValue() + "]");
 					}
-					
+
 					break;
 				}
 				case REA: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					char character = readChar();
-					int ascii = (int) character;
+					int ascii = character;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), ascii)));
 
 					trySetTop(stackItems);
@@ -357,7 +379,7 @@ public class PL0Debugger {
 				}
 				case WRI: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
 					int ascii = item.getValue();
 					char character = (char) ascii;
@@ -378,10 +400,10 @@ public class PL0Debugger {
 					case 1: { // negate
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
+
+						double d = Double.parseDouble(item1.getValue() + "." + item2.getValue());
 						double returnValue = d * (-1);
-						
+
 						int return1 = (int) returnValue;
 						int return2 = item2.getValue();
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
@@ -394,17 +416,17 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						double returnValue = round(d1 + d2);
-						
+
 						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
 						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-						
+
 						actual.setDebug("Operation sum: " + d1 + " + " + d2 + " = " + returnValue);
 						break;
 					}
@@ -413,17 +435,17 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						double returnValue = round(d1 - d2);
-						
+
 						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
 						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-						
+
 						actual.setDebug("Operation substraction: " + d1 + " - " + d2 + " = " + returnValue);
 						break;
 					}
@@ -432,17 +454,17 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						double returnValue = round(d1 * d2);
-						
+
 						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
 						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-						
+
 						actual.setDebug("Operation multiplication: " + d1 + " * " + d2 + " = " + returnValue);
 						break;
 					}
@@ -451,17 +473,17 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						double returnValue = round(d1 / d2);
-						
+
 						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
 						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-						
+
 						actual.setDebug("Operation division: " + d1 + " / " + d2 + " = " + returnValue);
 						break;
 					}
@@ -476,12 +498,12 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						int returnValue = (d1 == d2) ? 1 : 0;
-						
+
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 						actual.setDebug("Comparision equal: " + d1 + " == " + d2 + " --> " + returnValue);
 						break;
@@ -491,12 +513,12 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						int returnValue = (d1 != d2) ? 1 : 0;
-						
+
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 						actual.setDebug("Comparision not equal: " + d1 + " != " + d2 + " --> " + returnValue);
 						break;
@@ -506,12 +528,12 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						int returnValue = (d1 < d2) ? 1 : 0;
-						
+
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 						actual.setDebug("Comparision less than: " + d1 + " < " + d2 + " --> " + returnValue);
 						break;
@@ -521,14 +543,15 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						int returnValue = (d1 >= d2) ? 1 : 0;
-						
+
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-						actual.setDebug("Comparision greater than or equal: " + d1 + " >= " + d2 + " --> " + returnValue);
+						actual.setDebug(
+								"Comparision greater than or equal: " + d1 + " >= " + d2 + " --> " + returnValue);
 						break;
 					}
 					case 12: { // greater than
@@ -536,12 +559,12 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						int returnValue = (d1 > d2) ? 1 : 0;
-						
+
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 						actual.setDebug("Comparision greater than: " + d1 + " > " + d2 + " --> " + returnValue);
 						break;
@@ -551,12 +574,12 @@ public class PL0Debugger {
 						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-						
-						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue());
 						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-						
+
 						int returnValue = (d1 <= d2) ? 1 : 0;
-						
+
 						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 						actual.setDebug("Comparision less than or equal: " + d1 + " <= " + d2 + " --> " + returnValue);
 						break;
@@ -571,14 +594,14 @@ public class PL0Debugger {
 				}
 				case RTI: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
-					double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
+
+					double d = Double.parseDouble(item1.getValue() + "." + item2.getValue());
 					int i = Integer.valueOf((int) Math.round(d));
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), i)));
-					
+
 					trySetTop(stackItems);
 					trySetPC(future);
 					actual.setDebug("Parse real (" + d + ") to int (" + i + ")");
@@ -586,13 +609,13 @@ public class PL0Debugger {
 				}
 				case ITR: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					StackItem item = stackItems.get(stackItems.size() - 1).getValue();
-					
+
 					int i = item.getValue();
 					double d = Double.parseDouble(i + "." + 0);
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), 0)));
-					
+
 					trySetTop(stackItems);
 					trySetPC(future);
 					actual.setDebug("Parse int (" + i + ") to real (" + d + ")");
@@ -600,12 +623,12 @@ public class PL0Debugger {
 				}
 				case NEW: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					heapList.add(0);
-					
+
 					int returnValue = heapList.size() - 1;
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					
+
 					trySetTop(stackItems);
 					trySetPC(future);
 					actual.setDebug("Allocation of space in heap. Address of alocated cell: " + returnValue);
@@ -613,12 +636,12 @@ public class PL0Debugger {
 				}
 				case DEL: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					heapList.remove(heapList.size() - 1);
-					
+
 					int returnValue = heapList.size();
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					
+
 					trySetTop(stackItems);
 					trySetPC(future);
 					actual.setDebug("Deallocation of space in heap. Address of dealocated cell: " + returnValue);
@@ -626,14 +649,14 @@ public class PL0Debugger {
 				}
 				case LDA: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-					
+
 					int address = item.getValue();
 					int returnValue = heapList.get(address);
-					
+
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					
+
 					trySetTop(stackItems);
 					trySetPC(future);
 					actual.setDebug("Find cell in heap on address: " + address + ". Cell value: " + returnValue);
@@ -641,15 +664,15 @@ public class PL0Debugger {
 				}
 				case STA: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-					
+
 					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
+
 					int address = item2.getValue();
 					int value = item1.getValue();
-					
+
 					heapList.set(address, value);
-					
+
 					trySetTop(stackItems);
 					trySetPC(future);
 					actual.setDebug("Set cell in heap on address: " + address + ". Cell new value: " + value);
@@ -660,17 +683,18 @@ public class PL0Debugger {
 
 					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
+
 					int level = item1.getValue();
 					int position = item2.getValue();
-					
+
 					TreeItem<StackItem> item = getItemOnLevel(level, position);
 					item.getValue().setIndex(getNewIndex(stackItems));
 					stackItems.add(item);
 					trySetTop(stackItems);
 					trySetPC(future);
-					
-					actual.setDebug("Load " + item.getValue().getValue() + " from position " + position + ", " + level + " levels up, to top of stack");
+
+					actual.setDebug("Load " + item.getValue().getValue() + " from position " + position + ", " + level
+							+ " levels up, to top of stack");
 					break;
 				}
 				case PST: {
@@ -679,16 +703,17 @@ public class PL0Debugger {
 					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
+
 					int level = item2.getValue();
 					int position = item3.getValue();
 					StackItem item = new StackItem(0, item1.getValue());
-					
+
 					setItemOnLevel(level, position, new TreeItem<StackItem>(item));
 					trySetTop(stackItems);
 					trySetPC(future);
-					
-					actual.setDebug("Store " + item.getValue() + " to stack to position " + position + ", " + level + " levels up");
+
+					actual.setDebug("Store " + item.getValue() + " to stack to position " + position + ", " + level
+							+ " levels up");
 					break;
 				}
 				default:
@@ -705,28 +730,31 @@ public class PL0Debugger {
 	}
 
 	/**
-	 * Reads one character from input text field
-	 * If input is empty, reads "?" instead
+	 * Reads one character from input text field If input is empty, reads "?"
+	 * instead
+	 * 
 	 * @return read character
 	 */
 	private char readChar() {
 		String input = getController().textREA.getText();
 		if (input.isEmpty()) {
 			getController().textREA.setText("");
-			input = "?";		
+			input = "?";
 			log.info("Input was empty, parsing default value of \"?\"");
 		} else {
 			getController().textREA.setText(input.substring(1));
-			input = input.substring(0, 1);	
+			input = input.substring(0, 1);
 		}
 		return input.charAt(0);
 	}
-	
+
 	/**
 	 * Write character to end of text in output text field
-	 * @param ch character to write
+	 * 
+	 * @param ch
+	 *            character to write
 	 */
-	private void writeChar(char ch){
+	private void writeChar(char ch) {
 		String output = getController().textWRI.getText();
 		output = output + String.valueOf(ch);
 		getController().textWRI.setText(output);
@@ -734,29 +762,32 @@ public class PL0Debugger {
 
 	/**
 	 * Rounds double to two decimal points
-	 * @param value Unrounded double
+	 * 
+	 * @param value
+	 *            Unrounded double
 	 * @return Rounded double to two decimal points
 	 */
 	public static double round(double value) {
 		int places = 2;
-	    long factor = (long) Math.pow(10, places);
-	    value = value * factor;
-	    long tmp = Math.round(value);
-	    return (double) tmp / factor;
+		long factor = (long) Math.pow(10, places);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
 	}
-	
+
 	/**
 	 * Search through tree and look for base with given index
 	 * 
-	 * @param index Index of searched base
+	 * @param index
+	 *            Index of searched base
 	 * 
 	 * @return Base TreeItem
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	private TreeItem<StackItem> findBaseOnIndex(int index) throws MyException {
 		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
 		if (index >= list.size()) {
-			throw new MyException(ExceptionEnum.OVERFLOW); 
+			throw new MyException(ExceptionEnum.OVERFLOW);
 		}
 		for (TreeItem<StackItem> item : list) {
 			if (item.getValue().getIndex() == index) {
@@ -770,7 +801,7 @@ public class PL0Debugger {
 	 * Get list of items on given level
 	 * 
 	 * @return list of StackItems on given level
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	private ObservableList<TreeItem<StackItem>> getActualList() throws MyException {
 		log.info("Getting actual list");
@@ -858,14 +889,14 @@ public class PL0Debugger {
 	 * @param level
 	 *            number of levels up
 	 * @return Base item
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	private TreeItem<StackItem> getBase(int level) throws MyException {
 		if (level < 0) {
 			throw new MyException(ExceptionEnum.UNKNOWN_INST);
 		}
 		log.info("Getting new base on level: " + level);
-		
+
 		TreeItem<StackItem> newBase = stack.getBase();
 		while (level > 0) {
 			newBase = findBaseOnIndex(newBase.getValue().getValue());
@@ -884,7 +915,7 @@ public class PL0Debugger {
 	 * @param offset
 	 *            offset from base
 	 * @return StackItem on level and offset
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	private TreeItem<StackItem> getItemOnLevel(int level, int offset) throws MyException {
 		if (level < 0 || offset < 0) {
@@ -897,10 +928,10 @@ public class PL0Debugger {
 			TreeItem<StackItem> newItem = new TreeItem<StackItem>(
 					new StackItem(oldItem.getValue().getIndex(), oldItem.getValue().getValue()));
 			return newItem;
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new MyException(ExceptionEnum.OVERFLOW);
 		}
-		
+
 	}
 
 	/**
@@ -912,7 +943,7 @@ public class PL0Debugger {
 	 *            offset from base
 	 * @param item
 	 *            StackItem to modify
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	private void setItemOnLevel(int level, int offset, TreeItem<StackItem> item) throws MyException {
 		if (level < 0 || offset < 0) {

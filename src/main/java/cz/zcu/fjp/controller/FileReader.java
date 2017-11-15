@@ -36,7 +36,8 @@ public class FileReader {
 	/**
 	 * Accepts file with instructions and tries to parse it into ObservableList
 	 * 
-	 * @param file Table in txt file
+	 * @param file
+	 *            Table in txt file
 	 * 
 	 * @return Parsed file to ObservableList
 	 */

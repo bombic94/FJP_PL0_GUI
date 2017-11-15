@@ -58,7 +58,7 @@ public class MainController implements Initializable {
 
 	@FXML
 	private Label actualTopLabel;
-	
+
 	@FXML
 	private Label heapSizeLabel;
 
@@ -100,13 +100,13 @@ public class MainController implements Initializable {
 
 	@FXML
 	private TableView<Heap> tableHeap;
-	
+
 	@FXML
 	private TableColumn<Heap, SimpleIntegerProperty> heapColumnIndex;
-	
+
 	@FXML
 	private TableColumn<Heap, SimpleIntegerProperty> heapColumnValue;
-	
+
 	@FXML
 	private Button btnForward;
 
@@ -115,10 +115,10 @@ public class MainController implements Initializable {
 
 	@FXML
 	private Button btnLoad;
-	
+
 	@FXML
 	public TextField textREA;
-	
+
 	@FXML
 	public TextField textWRI;
 
@@ -136,9 +136,11 @@ public class MainController implements Initializable {
 	 * to changed row in table, and init TreeTableView representing Stack
 	 * information
 	 * 
-	 * @param arg0 URL
+	 * @param arg0
+	 *            URL
 	 * 
-	 * @param arg1 ResourceBundle
+	 * @param arg1
+	 *            ResourceBundle
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -158,12 +160,12 @@ public class MainController implements Initializable {
 
 		// table is controlled by button, not mouse clicks
 		tableInstructions.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                event.consume();
-            }
-        });
-		
+			@Override
+			public void handle(MouseEvent event) {
+				event.consume();
+			}
+		});
+
 		pl0.setController(this);
 	}
 
@@ -172,7 +174,7 @@ public class MainController implements Initializable {
 	 * alert, else initalize table.
 	 * 
 	 * @param event
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	@FXML
 	void loadFile(ActionEvent event) throws MyException {
@@ -205,7 +207,7 @@ public class MainController implements Initializable {
 	 * Reset table to first instruction.
 	 * 
 	 * @param event
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	@FXML
 	void reset(ActionEvent event) throws MyException {
@@ -217,7 +219,7 @@ public class MainController implements Initializable {
 		tableInstructions.setItems(instructions);
 		tableInstructions.getColumns().get(0).setVisible(false);
 		tableInstructions.getColumns().get(0).setVisible(true);
-		
+
 		tableInstructions.requestFocus();
 		tableInstructions.getSelectionModel().clearSelection();
 
@@ -231,7 +233,7 @@ public class MainController implements Initializable {
 	 * Select next row in program instruction table.
 	 * 
 	 * @param event
-	 * @throws MyException 
+	 * @throws MyException
 	 */
 	@FXML
 	void stepForward(ActionEvent event) throws MyException {
@@ -272,7 +274,7 @@ public class MainController implements Initializable {
 
 			rootCopy = copy(futureStack.getRoot());
 			tableStateFuture.setRoot(rootCopy);
-			
+
 			tableHeap.setItems(pl0.getHeap());
 		}
 	}
@@ -280,7 +282,8 @@ public class MainController implements Initializable {
 	/**
 	 * Create deep copy of stack by copying root TreeItem
 	 * 
-	 * @param root Parent TreeItem
+	 * @param root
+	 *            Parent TreeItem
 	 * 
 	 * @return Copy of Parent TreeItem
 	 */
@@ -312,15 +315,15 @@ public class MainController implements Initializable {
 		rootCopy = null;
 		pl0.nullStack();
 	}
-	
+
 	public void alert(ExceptionEnum error) {
 		btnForward.setDisable(true);
-		
+
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("Error has happened during execution of instructions");
 		alert.setContentText(error.toString());
 		alert.showAndWait();
-		
+
 	}
 }
