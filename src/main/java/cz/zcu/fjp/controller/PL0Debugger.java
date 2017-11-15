@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import cz.zcu.fjp.model.ExceptionEnum;
 import cz.zcu.fjp.model.Heap;
 import cz.zcu.fjp.model.Instruction;
+import cz.zcu.fjp.model.MyException;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.collections.FXCollections;
@@ -73,8 +74,9 @@ public class PL0Debugger {
 	 * @param instructions ObservableList of instructions in table.
 	 * 
 	 * @return Future instruction
+	 * @throws MyException 
 	 */
-	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) {
+	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions) throws MyException {
 
 		ObservableList<TreeItem<StackItem>> stackItems = getActualList();
 
@@ -84,623 +86,629 @@ public class PL0Debugger {
 		} else {
 
 			log.info("Actual instruction: " + actual.toString());
-			switch (actual.getInstruction()) {
-			case LIT: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), actual.getOperand())));
-				trySetTop(stackItems);
-				trySetPC(future);
-				
-				actual.setDebug("Push " + actual.getOperand() + " onto the top of stack");
-				break;
-			}
-			case OPR: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-
-				switch (actual.getOperand()) {
-				case 0: {
-					controller.alert(ExceptionEnum.UNKNOWN_INST);
-					break;
-				}
-				case 1: { // negate
-					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item.getValue() * (-1);
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Operation negate: " + item.getValue() + " * (-1) = " + returnValue);
-					break;
-				}
-				case 2: { // sum
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item1.getValue() + item2.getValue();
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Operation sum: " + item1.getValue() + " + " + item2.getValue() + " = " + returnValue);
-					break;
-				}
-				case 3: { // substract
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item1.getValue() - item2.getValue();
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Operation substraction: " + item1.getValue() + " - " + item2.getValue() + " = " + returnValue);
-					break;
-				}
-				case 4: { // multiply
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item1.getValue() * item2.getValue();
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Operation multiplication: " + item1.getValue() + " * " + item2.getValue() + " = " + returnValue);
-					break;
-				}
-				case 5: { // divide
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item1.getValue() / item2.getValue();
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Operation division: " + item1.getValue() + " / " + item2.getValue() + " = " + returnValue);
-					break;
-				}
-				case 6: { // modulo
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item1.getValue() % item2.getValue();
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Operation modulo: " + item1.getValue() + " % " + item2.getValue() + " = " + returnValue);
-					break;
-				}
-				case 7: {// odd?
-					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = item.getValue() % 2;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Test if " + item.getValue() + " is odd: " + item.getValue() + " % 2 = " + returnValue);
-					break;
-				}
-				case 8: { // equal
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = (item1.getValue() == item2.getValue()) ? 1 : 0;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision equal: " + item1.getValue() + " == " + item2.getValue() + " --> " + returnValue);
-					break;
-				}
-				case 9: { // not equal
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = (item1.getValue() != item2.getValue()) ? 1 : 0;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision not equal: " + item1.getValue() + " != " + item2.getValue() + " --> " + returnValue);
-					break;
-				}
-				case 10: { // less than
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = (item1.getValue() < item2.getValue()) ? 1 : 0;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision less than: " + item1.getValue() + " < " + item2.getValue() + " --> " + returnValue);
-					break;
-				}
-				case 11: { // greater than or equal
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = (item1.getValue() >= item2.getValue()) ? 1 : 0;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision greater than or equal: " + item1.getValue() + " >= " + item2.getValue() + " --> " + returnValue);
-					break;
-				}
-				case 12: { // greater than
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = (item1.getValue() > item2.getValue()) ? 1 : 0;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision greater than: " + item1.getValue() + " > " + item2.getValue() + " --> " + returnValue);
-					break;
-				}
-				case 13: { // less than or equal
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					int returnValue = (item1.getValue() <= item2.getValue()) ? 1 : 0;
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= " + item2.getValue() + " --> " + returnValue);
-					break;
-				}
-				default: {
-					controller.alert(ExceptionEnum.UNKNOWN_INST);
-				}
-				}
-				trySetTop(stackItems);
-				trySetPC(future);
-				break;
-			}
-			case LOD: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-
-				TreeItem<StackItem> item = getItemOnLevel(actual.getLevel(), actual.getOperand());
-				item.getValue().setIndex(getNewIndex(stackItems));
-				stackItems.add(item);
-				trySetTop(stackItems);
-				trySetPC(future);
-				
-				actual.setDebug("Load " + item.getValue().getValue() + " from position " + actual.getOperand() + ", " + actual.getLevel() + " levels up, to top of stack");
-				break;
-			}
-			case STO: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-
-				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-				setItemOnLevel(actual.getLevel(), actual.getOperand(), new TreeItem<StackItem>(item));
-				trySetTop(stackItems);
-				trySetPC(future);
-				
-				actual.setDebug("Store " + item.getValue() + " to stack to position " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
-				break;
-			}
-			case CAL: {
-				future = tryGetInstruction(actual.getOperand(), instructions);
-
-				StackItem item1 = new StackItem(stack.getTop().getValue().getIndex() + 1,
-						getBase(actual.getLevel()).getValue().getIndex());
-				StackItem item2 = new StackItem(stack.getTop().getValue().getIndex() + 2,
-						stack.getBase().getValue().getIndex());
-				StackItem item3 = new StackItem(stack.getTop().getValue().getIndex() + 3,
-						stack.getProgramCounter() + 1);
-
-				stack.setProgramCounter(actual.getOperand());
-
-				stackItemsToAdd = FXCollections.observableArrayList(item1, item2, item3);
-				
-				actual.setDebug("Call subroutine on index " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
-				break;
-			}
-			case INT: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-
-				if (stackItemsToAdd != null && !stackItemsToAdd.isEmpty()) {
-					if (actual.getOperand() > stackItemsToAdd.size()) {
-						for (int i = stackItemsToAdd.size(); i < actual.getOperand(); i++) {
-							int plus = 1;
-							int index = stackItemsToAdd.get(stackItemsToAdd.size() - 1).getIndex() + plus;
-							stackItemsToAdd.add(new StackItem(index, 0));
-							plus++;
-						}
-					}
-
-					TreeItem<StackItem> subroot = new TreeItem<StackItem>(stackItemsToAdd.get(0));
-					subroot.setExpanded(true);
-					for (int i = 1; i < stackItemsToAdd.size(); i++) {
-						subroot.getChildren().add(new TreeItem<StackItem>(stackItemsToAdd.get(i)));
-					}
-					stack.getRoot().getChildren().add(subroot);
-					stack.setBase(subroot);
-
-					stack.setLevel(stack.getLevel() + 1);
-
-					stackItemsToAdd.removeAll(stackItemsToAdd);
-
-					trySetTop(subroot.getChildren());
-				} else {
-					int size = stackItems.size() + 1;
-
-					TreeItem<StackItem> subroot = new TreeItem<StackItem>(new StackItem(size, 0));
-					subroot.setExpanded(true);
-
-					for (int i = size + 1; i < size + actual.getOperand(); i++) {
-						subroot.getChildren().add(new TreeItem<StackItem>(new StackItem(i, 0)));
-					}
-					stackItems.add(subroot);
-
-					stack.setBase(subroot);
-					stack.setLevel(stack.getLevel() + 1);
-					trySetTop(subroot.getChildren());
-				}
-
-				trySetPC(future);
-				actual.setDebug("Increment stack size by  " + actual.getOperand());
-				break;
-			}
-			case JMP: {
-				future = tryGetInstruction(actual.getOperand(), instructions);
-
-				trySetPC(future);
-				actual.setDebug("Jump to the instruction at address " + actual.getOperand());
-				break;
-			}
-			case JMC: {
-
-				if (stack.getTop().getValue().getValue() == 0) {
-					future = tryGetInstruction(actual.getOperand(), instructions);
-				} else {
+			try {
+				switch (actual.getInstruction()) {
+				case LIT: {
 					future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				}
 
-				stackItems.remove(stackItems.size() - 1);
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Jump to the instruction at address " + actual.getOperand() + ", if value at top is 0");
-				break;
-			}
-			case RET: {
-
-				if (stack.getBase().getValue().getIndex() <= 1) {
-					future = null;
-					stack.setProgramCounter(-1);
-					actual.setDebug("Return from subroutine. End of program");
-				} else {
-					future = tryGetInstruction(stack.getBase().getChildren().get(1).getValue().getValue(),
-							instructions);
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), actual.getOperand())));
+					trySetTop(stackItems);
 					trySetPC(future);
-
-					stack.setLevel(stack.getLevel() - 1);
-					stack.setBase(findBaseOnIndex(stack.getBase().getChildren().get(0).getValue().getValue()));
-					stack.getRoot().getChildren().remove(stack.getRoot().getChildren().size() - 1);
-
-					trySetTop(stack.getBase().getChildren());
-					actual.setDebug("Return from subroutine. New base: [" + stack.getBase().getValue().getIndex() + ", " + stack.getBase().getValue().getValue() + "]");
-				}
-				
-				break;
-			}
-			case REA: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				char character = readChar();
-				int ascii = (int) character;
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), ascii)));
-
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Save ASCII code of char at input: Char: " + character + ", ASCII: " + ascii);
-				break;
-			}
-			case WRI: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-				int ascii = item.getValue();
-				char character = (char) ascii;
-				writeChar(character);
-
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Write char from ASCII code to output: Char: " + character + ", ASCII: " + ascii);
-				break;
-			}
-			case OPF: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-
-				switch (actual.getOperand()) {
-				case 0: {
-					controller.alert(ExceptionEnum.UNKNOWN_INST);
+					
+					actual.setDebug("Push " + actual.getOperand() + " onto the top of stack");
 					break;
 				}
-				case 1: { // negate
+				case OPR: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+					switch (actual.getOperand()) {
+					case 0: {
+						throw new MyException(ExceptionEnum.UNKNOWN_INST);
+					}
+					case 1: { // negate
+						StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item.getValue() * (-1);
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Operation negate: " + item.getValue() + " * (-1) = " + returnValue);
+						break;
+					}
+					case 2: { // sum
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item1.getValue() + item2.getValue();
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Operation sum: " + item1.getValue() + " + " + item2.getValue() + " = " + returnValue);
+						break;
+					}
+					case 3: { // substract
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item1.getValue() - item2.getValue();
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Operation substraction: " + item1.getValue() + " - " + item2.getValue() + " = " + returnValue);
+						break;
+					}
+					case 4: { // multiply
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item1.getValue() * item2.getValue();
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Operation multiplication: " + item1.getValue() + " * " + item2.getValue() + " = " + returnValue);
+						break;
+					}
+					case 5: { // divide
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item1.getValue() / item2.getValue();
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Operation division: " + item1.getValue() + " / " + item2.getValue() + " = " + returnValue);
+						break;
+					}
+					case 6: { // modulo
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item1.getValue() % item2.getValue();
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Operation modulo: " + item1.getValue() + " % " + item2.getValue() + " = " + returnValue);
+						break;
+					}
+					case 7: {// odd?
+						StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = item.getValue() % 2;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Test if " + item.getValue() + " is odd: " + item.getValue() + " % 2 = " + returnValue);
+						break;
+					}
+					case 8: { // equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = (item1.getValue() == item2.getValue()) ? 1 : 0;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision equal: " + item1.getValue() + " == " + item2.getValue() + " --> " + returnValue);
+						break;
+					}
+					case 9: { // not equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = (item1.getValue() != item2.getValue()) ? 1 : 0;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision not equal: " + item1.getValue() + " != " + item2.getValue() + " --> " + returnValue);
+						break;
+					}
+					case 10: { // less than
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = (item1.getValue() < item2.getValue()) ? 1 : 0;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision less than: " + item1.getValue() + " < " + item2.getValue() + " --> " + returnValue);
+						break;
+					}
+					case 11: { // greater than or equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = (item1.getValue() >= item2.getValue()) ? 1 : 0;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision greater than or equal: " + item1.getValue() + " >= " + item2.getValue() + " --> " + returnValue);
+						break;
+					}
+					case 12: { // greater than
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = (item1.getValue() > item2.getValue()) ? 1 : 0;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision greater than: " + item1.getValue() + " > " + item2.getValue() + " --> " + returnValue);
+						break;
+					}
+					case 13: { // less than or equal
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						int returnValue = (item1.getValue() <= item2.getValue()) ? 1 : 0;
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision less than or equal: " + item1.getValue() + " <= " + item2.getValue() + " --> " + returnValue);
+						break;
+					}
+					default: {
+						throw new MyException(ExceptionEnum.UNKNOWN_INST);
+					}
+					}
+					trySetTop(stackItems);
+					trySetPC(future);
+					break;
+				}
+				case LOD: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+					TreeItem<StackItem> item = getItemOnLevel(actual.getLevel(), actual.getOperand());
+					item.getValue().setIndex(getNewIndex(stackItems));
+					stackItems.add(item);
+					trySetTop(stackItems);
+					trySetPC(future);
+					
+					actual.setDebug("Load " + item.getValue().getValue() + " from position " + actual.getOperand() + ", " + actual.getLevel() + " levels up, to top of stack");
+					break;
+				}
+				case STO: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
+					setItemOnLevel(actual.getLevel(), actual.getOperand(), new TreeItem<StackItem>(item));
+					trySetTop(stackItems);
+					trySetPC(future);
+					
+					actual.setDebug("Store " + item.getValue() + " to stack to position " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
+					break;
+				}
+				case CAL: {
+					future = tryGetInstruction(actual.getOperand(), instructions);
+
+					StackItem item1 = new StackItem(stack.getTop().getValue().getIndex() + 1,
+							getBase(actual.getLevel()).getValue().getIndex());
+					StackItem item2 = new StackItem(stack.getTop().getValue().getIndex() + 2,
+							stack.getBase().getValue().getIndex());
+					StackItem item3 = new StackItem(stack.getTop().getValue().getIndex() + 3,
+							stack.getProgramCounter() + 1);
+
+					stack.setProgramCounter(actual.getOperand());
+
+					stackItemsToAdd = FXCollections.observableArrayList(item1, item2, item3);
+					
+					actual.setDebug("Call subroutine on index " + actual.getOperand() + ", " + actual.getLevel() + " levels up");
+					break;
+				}
+				case INT: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+					if (stackItemsToAdd != null && !stackItemsToAdd.isEmpty()) {
+						if (actual.getOperand() > stackItemsToAdd.size()) {
+							for (int i = stackItemsToAdd.size(); i < actual.getOperand(); i++) {
+								int plus = 1;
+								int index = stackItemsToAdd.get(stackItemsToAdd.size() - 1).getIndex() + plus;
+								stackItemsToAdd.add(new StackItem(index, 0));
+								plus++;
+							}
+						}
+
+						TreeItem<StackItem> subroot = new TreeItem<StackItem>(stackItemsToAdd.get(0));
+						subroot.setExpanded(true);
+						for (int i = 1; i < stackItemsToAdd.size(); i++) {
+							subroot.getChildren().add(new TreeItem<StackItem>(stackItemsToAdd.get(i)));
+						}
+						stack.getRoot().getChildren().add(subroot);
+						stack.setBase(subroot);
+
+						stack.setLevel(stack.getLevel() + 1);
+
+						stackItemsToAdd.removeAll(stackItemsToAdd);
+
+						trySetTop(subroot.getChildren());
+					} else {
+						int size = stackItems.size() + 1;
+
+						TreeItem<StackItem> subroot = new TreeItem<StackItem>(new StackItem(size, 0));
+						subroot.setExpanded(true);
+
+						for (int i = size + 1; i < size + actual.getOperand(); i++) {
+							subroot.getChildren().add(new TreeItem<StackItem>(new StackItem(i, 0)));
+						}
+						stackItems.add(subroot);
+
+						stack.setBase(subroot);
+						stack.setLevel(stack.getLevel() + 1);
+						trySetTop(subroot.getChildren());
+					}
+
+					trySetPC(future);
+					actual.setDebug("Increment stack size by  " + actual.getOperand());
+					break;
+				}
+				case JMP: {
+					future = tryGetInstruction(actual.getOperand(), instructions);
+
+					trySetPC(future);
+					actual.setDebug("Jump to the instruction at address " + actual.getOperand());
+					break;
+				}
+				case JMC: {
+
+					if (stack.getTop().getValue().getValue() == 0) {
+						future = tryGetInstruction(actual.getOperand(), instructions);
+					} else {
+						future = tryGetInstruction(actual.getIndex() + 1, instructions);
+					}
+
+					stackItems.remove(stackItems.size() - 1);
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Jump to the instruction at address " + actual.getOperand() + ", if value at top is 0");
+					break;
+				}
+				case RET: {
+
+					if (stack.getBase().getValue().getIndex() <= 1) {
+						future = null;
+						stack.setProgramCounter(-1);
+						actual.setDebug("Return from subroutine. End of program");
+					} else {
+						future = tryGetInstruction(stack.getBase().getChildren().get(1).getValue().getValue(),
+								instructions);
+						trySetPC(future);
+
+						stack.setLevel(stack.getLevel() - 1);
+						stack.setBase(findBaseOnIndex(stack.getBase().getChildren().get(0).getValue().getValue()));
+						stack.getRoot().getChildren().remove(stack.getRoot().getChildren().size() - 1);
+
+						trySetTop(stack.getBase().getChildren());
+						actual.setDebug("Return from subroutine. New base: [" + stack.getBase().getValue().getIndex() + ", " + stack.getBase().getValue().getValue() + "]");
+					}
+					
+					break;
+				}
+				case REA: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+					
+					char character = readChar();
+					int ascii = (int) character;
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), ascii)));
+
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Save ASCII code of char at input: Char: " + character + ", ASCII: " + ascii);
+					break;
+				}
+				case WRI: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+					
+					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
+					int ascii = item.getValue();
+					char character = (char) ascii;
+					writeChar(character);
+
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Write char from ASCII code to output: Char: " + character + ", ASCII: " + ascii);
+					break;
+				}
+				case OPF: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+
+					switch (actual.getOperand()) {
+					case 0: {
+						throw new MyException(ExceptionEnum.UNKNOWN_INST);
+					}
+					case 1: { // negate
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
+						double returnValue = d * (-1);
+						
+						int return1 = (int) returnValue;
+						int return2 = item2.getValue();
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+						actual.setDebug("Operation negate: " + d + " * (-1) = " + returnValue);
+						break;
+					}
+					case 2: { // sum
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						double returnValue = round(d1 + d2);
+						
+						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+						
+						actual.setDebug("Operation sum: " + d1 + " + " + d2 + " = " + returnValue);
+						break;
+					}
+					case 3: { // substract
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						double returnValue = round(d1 - d2);
+						
+						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+						
+						actual.setDebug("Operation substraction: " + d1 + " - " + d2 + " = " + returnValue);
+						break;
+					}
+					case 4: { // multiply
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						double returnValue = round(d1 * d2);
+						
+						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+						
+						actual.setDebug("Operation multiplication: " + d1 + " * " + d2 + " = " + returnValue);
+						break;
+					}
+					case 5: { // divide
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						double returnValue = round(d1 / d2);
+						
+						int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
+						int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
+						
+						actual.setDebug("Operation division: " + d1 + " / " + d2 + " = " + returnValue);
+						break;
+					}
+					case 6: { // modulo - not implemented for floating point
+						throw new MyException(ExceptionEnum.UNKNOWN_INST);
+					}
+					case 7: {// odd? - not implemented for floating point
+						throw new MyException(ExceptionEnum.UNKNOWN_INST);
+					}
+					case 8: { // equal
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						int returnValue = (d1 == d2) ? 1 : 0;
+						
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision equal: " + d1 + " == " + d2 + " --> " + returnValue);
+						break;
+					}
+					case 9: { // not equal
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						int returnValue = (d1 != d2) ? 1 : 0;
+						
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision not equal: " + d1 + " != " + d2 + " --> " + returnValue);
+						break;
+					}
+					case 10: { // less than
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						int returnValue = (d1 < d2) ? 1 : 0;
+						
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision less than: " + d1 + " < " + d2 + " --> " + returnValue);
+						break;
+					}
+					case 11: { // greater than or equal
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						int returnValue = (d1 >= d2) ? 1 : 0;
+						
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision greater than or equal: " + d1 + " >= " + d2 + " --> " + returnValue);
+						break;
+					}
+					case 12: { // greater than
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						int returnValue = (d1 > d2) ? 1 : 0;
+						
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision greater than: " + d1 + " > " + d2 + " --> " + returnValue);
+						break;
+					}
+					case 13: { // less than or equal
+						StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+						StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+						
+						double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
+						double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+						
+						int returnValue = (d1 <= d2) ? 1 : 0;
+						
+						stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
+						actual.setDebug("Comparision less than or equal: " + d1 + " <= " + d2 + " --> " + returnValue);
+						break;
+					}
+					default: {
+						throw new MyException(ExceptionEnum.UNKNOWN_INST);
+					}
+					}
+					trySetTop(stackItems);
+					trySetPC(future);
+					break;
+				}
+				case RTI: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+					
 					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					
 					double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
-					double returnValue = d * (-1);
+					int i = Integer.valueOf((int) Math.round(d));
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), i)));
 					
-					int return1 = (int) returnValue;
-					int return2 = item2.getValue();
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-					actual.setDebug("Operation negate: " + d + " * (-1) = " + returnValue);
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Parse real (" + d + ") to int (" + i + ")");
 					break;
 				}
-				case 2: { // sum
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+				case ITR: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					StackItem item = stackItems.get(stackItems.size() - 1).getValue();
 					
-					double returnValue = round(d1 + d2);
+					int i = item.getValue();
+					double d = Double.parseDouble(i + "." + 0);
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), 0)));
 					
-					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
-					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-					
-					actual.setDebug("Operation sum: " + d1 + " + " + d2 + " = " + returnValue);
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Parse int (" + i + ") to real (" + d + ")");
 					break;
 				}
-				case 3: { // substract
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+				case NEW: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					heapList.add(0);
 					
-					double returnValue = round(d1 - d2);
+					int returnValue = heapList.size() - 1;
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 					
-					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
-					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-					
-					actual.setDebug("Operation substraction: " + d1 + " - " + d2 + " = " + returnValue);
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Allocation of space in heap. Address of alocated cell: " + returnValue);
 					break;
 				}
-				case 4: { // multiply
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+				case DEL: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					heapList.remove(heapList.size() - 1);
 					
-					double returnValue = round(d1 * d2);
+					int returnValue = heapList.size();
+					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
 					
-					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
-					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-					
-					actual.setDebug("Operation multiplication: " + d1 + " * " + d2 + " = " + returnValue);
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Deallocation of space in heap. Address of dealocated cell: " + returnValue);
 					break;
 				}
-				case 5: { // divide
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+				case LDA: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
 					
-					double returnValue = round(d1 / d2);
-					
-					int return1 = Integer.parseInt(Double.toString(returnValue).split("\\.")[0]);
-					int return2 = Integer.parseInt(Double.toString(returnValue).split("\\.")[1]);
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return1)));
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), return2)));
-					
-					actual.setDebug("Operation division: " + d1 + " / " + d2 + " = " + returnValue);
-					break;
-				}
-				case 6: { // modulo - not implemented for floating point
-					controller.alert(ExceptionEnum.UNKNOWN_INST);
-					break;
-				}
-				case 7: {// odd? - not implemented for floating point
-					controller.alert(ExceptionEnum.UNKNOWN_INST);
-					break;
-				}
-				case 8: { // equal
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-					
-					int returnValue = (d1 == d2) ? 1 : 0;
+					int address = item.getValue();
+					int returnValue = heapList.get(address);
 					
 					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision equal: " + d1 + " == " + d2 + " --> " + returnValue);
+					
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Find cell in heap on address: " + address + ". Cell value: " + returnValue);
 					break;
 				}
-				case 9: { // not equal
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+				case STA: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
+					
 					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
 					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
 					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
+					int address = item2.getValue();
+					int value = item1.getValue();
 					
-					int returnValue = (d1 != d2) ? 1 : 0;
+					heapList.set(address, value);
 					
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision not equal: " + d1 + " != " + d2 + " --> " + returnValue);
+					trySetTop(stackItems);
+					trySetPC(future);
+					actual.setDebug("Set cell in heap on address: " + address + ". Cell new value: " + value);
 					break;
 				}
-				case 10: { // less than
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-					
-					int returnValue = (d1 < d2) ? 1 : 0;
-					
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision less than: " + d1 + " < " + d2 + " --> " + returnValue);
-					break;
-				}
-				case 11: { // greater than or equal
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-					
-					int returnValue = (d1 >= d2) ? 1 : 0;
-					
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision greater than or equal: " + d1 + " >= " + d2 + " --> " + returnValue);
-					break;
-				}
-				case 12: { // greater than
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-					
-					int returnValue = (d1 > d2) ? 1 : 0;
-					
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision greater than: " + d1 + " > " + d2 + " --> " + returnValue);
-					break;
-				}
-				case 13: { // less than or equal
-					StackItem item4 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-					
-					double d2 = Double.parseDouble(item3.getValue() + "." + item4.getValue()); 
-					double d1 = Double.parseDouble(item1.getValue() + "." + item2.getValue());
-					
-					int returnValue = (d1 <= d2) ? 1 : 0;
-					
-					stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-					actual.setDebug("Comparision less than or equal: " + d1 + " <= " + d2 + " --> " + returnValue);
-					break;
-				}
-				default: {
-					controller.alert(ExceptionEnum.UNKNOWN_INST);
-				}
-				}
-				trySetTop(stackItems);
-				trySetPC(future);
-				break;
-			}
-			case RTI: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-				
-				double d = Double.parseDouble(item1.getValue() + "." + item2.getValue()); 
-				int i = Integer.valueOf((int) Math.round(d));
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), i)));
-				
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Parse real (" + d + ") to int (" + i + ")");
-				break;
-			}
-			case ITR: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				StackItem item = stackItems.get(stackItems.size() - 1).getValue();
-				
-				int i = item.getValue();
-				double d = Double.parseDouble(i + "." + 0);
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), 0)));
-				
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Parse int (" + i + ") to real (" + d + ")");
-				break;
-			}
-			case NEW: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				heapList.add(0);
-				
-				int returnValue = heapList.size() - 1;
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-				
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Allocation of space in heap. Address of alocated cell: " + returnValue);
-				break;
-			}
-			case DEL: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				heapList.remove(heapList.size() - 1);
-				
-				int returnValue = heapList.size();
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-				
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Deallocation of space in heap. Address of dealocated cell: " + returnValue);
-				break;
-			}
-			case LDA: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				StackItem item = stackItems.remove(stackItems.size() - 1).getValue();
-				
-				int address = item.getValue();
-				int returnValue = heapList.get(address);
-				
-				stackItems.add(new TreeItem<StackItem>(new StackItem(getNewIndex(stackItems), returnValue)));
-				
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Find cell in heap on address: " + address + ". Cell value: " + returnValue);
-				break;
-			}
-			case STA: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
-				
-				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-				
-				int address = item2.getValue();
-				int value = item1.getValue();
-				
-				heapList.set(address, value);
-				
-				trySetTop(stackItems);
-				trySetPC(future);
-				actual.setDebug("Set cell in heap on address: " + address + ". Cell new value: " + value);
-				break;
-			}
-			case PLD: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+				case PLD: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
-				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-				
-				int level = item1.getValue();
-				int position = item2.getValue();
-				
-				TreeItem<StackItem> item = getItemOnLevel(level, position);
-				item.getValue().setIndex(getNewIndex(stackItems));
-				stackItems.add(item);
-				trySetTop(stackItems);
-				trySetPC(future);
-				
-				actual.setDebug("Load " + item.getValue().getValue() + " from position " + position + ", " + level + " levels up, to top of stack");
-				break;
-			}
-			case PST: {
-				future = tryGetInstruction(actual.getIndex() + 1, instructions);
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					int level = item1.getValue();
+					int position = item2.getValue();
+					
+					TreeItem<StackItem> item = getItemOnLevel(level, position);
+					item.getValue().setIndex(getNewIndex(stackItems));
+					stackItems.add(item);
+					trySetTop(stackItems);
+					trySetPC(future);
+					
+					actual.setDebug("Load " + item.getValue().getValue() + " from position " + position + ", " + level + " levels up, to top of stack");
+					break;
+				}
+				case PST: {
+					future = tryGetInstruction(actual.getIndex() + 1, instructions);
 
-				StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
-				StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
-				StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
-				
-				int level = item2.getValue();
-				int position = item3.getValue();
-				StackItem item = new StackItem(0, item1.getValue());
-				
-				setItemOnLevel(level, position, new TreeItem<StackItem>(item));
-				trySetTop(stackItems);
-				trySetPC(future);
-				
-				actual.setDebug("Store " + item.getValue() + " to stack to position " + position + ", " + level + " levels up");
-				break;
-			}
-			default:
-				controller.alert(ExceptionEnum.UNKNOWN_INST);
-				break;
+					StackItem item3 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item2 = stackItems.remove(stackItems.size() - 1).getValue();
+					StackItem item1 = stackItems.remove(stackItems.size() - 1).getValue();
+					
+					int level = item2.getValue();
+					int position = item3.getValue();
+					StackItem item = new StackItem(0, item1.getValue());
+					
+					setItemOnLevel(level, position, new TreeItem<StackItem>(item));
+					trySetTop(stackItems);
+					trySetPC(future);
+					
+					actual.setDebug("Store " + item.getValue() + " to stack to position " + position + ", " + level + " levels up");
+					break;
+				}
+				default:
+					throw new MyException(ExceptionEnum.UNKNOWN_INST);
+				}
+			} catch (NumberFormatException e) {
+				throw new MyException(ExceptionEnum.WRONG_ARG);
+			} catch (NullPointerException e) {
+				throw new MyException(ExceptionEnum.WRONG_ARG);
 			}
 		}
 
 		return future;
 	}
 
+	/**
+	 * Reads one character from input text field
+	 * If input is empty, reads "?" instead
+	 * @return read character
+	 */
 	private char readChar() {
 		String input = getController().textREA.getText();
 		if (input.isEmpty()) {
@@ -714,12 +722,21 @@ public class PL0Debugger {
 		return input.charAt(0);
 	}
 	
+	/**
+	 * Write character to end of text in output text field
+	 * @param ch character to write
+	 */
 	private void writeChar(char ch){
 		String output = getController().textWRI.getText();
 		output = output + String.valueOf(ch);
 		getController().textWRI.setText(output);
 	}
 
+	/**
+	 * Rounds double to two decimal points
+	 * @param value Unrounded double
+	 * @return Rounded double to two decimal points
+	 */
 	public static double round(double value) {
 		int places = 2;
 	    long factor = (long) Math.pow(10, places);
@@ -734,9 +751,13 @@ public class PL0Debugger {
 	 * @param index Index of searched base
 	 * 
 	 * @return Base TreeItem
+	 * @throws MyException 
 	 */
-	private TreeItem<StackItem> findBaseOnIndex(int index) {
+	private TreeItem<StackItem> findBaseOnIndex(int index) throws MyException {
 		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
+		if (index >= list.size()) {
+			throw new MyException(ExceptionEnum.OVERFLOW); 
+		}
 		for (TreeItem<StackItem> item : list) {
 			if (item.getValue().getIndex() == index) {
 				return item;
@@ -749,17 +770,22 @@ public class PL0Debugger {
 	 * Get list of items on given level
 	 * 
 	 * @return list of StackItems on given level
+	 * @throws MyException 
 	 */
-	private ObservableList<TreeItem<StackItem>> getActualList() {
+	private ObservableList<TreeItem<StackItem>> getActualList() throws MyException {
 		log.info("Getting actual list");
-		int level = stack.getLevel();
-		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
-		log.info("level: " + level + ", list: " + list);
-		if (level > -1) {
-			list = list.get(level).getChildren();
+		try {
+			int level = stack.getLevel();
+			ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
 			log.info("level: " + level + ", list: " + list);
+			if (level > -1) {
+				list = list.get(level).getChildren();
+				log.info("level: " + level + ", list: " + list);
+			}
+			return list;
+		} catch (Exception e) {
+			throw new MyException(ExceptionEnum.WRONG_ARG);
 		}
-		return list;
 	}
 
 	/**
@@ -832,8 +858,12 @@ public class PL0Debugger {
 	 * @param level
 	 *            number of levels up
 	 * @return Base item
+	 * @throws MyException 
 	 */
-	private TreeItem<StackItem> getBase(int level) {
+	private TreeItem<StackItem> getBase(int level) throws MyException {
+		if (level < 0) {
+			throw new MyException(ExceptionEnum.UNKNOWN_INST);
+		}
 		log.info("Getting new base on level: " + level);
 		
 		TreeItem<StackItem> newBase = stack.getBase();
@@ -843,6 +873,7 @@ public class PL0Debugger {
 			level--;
 		}
 		return newBase;
+
 	}
 
 	/**
@@ -853,14 +884,23 @@ public class PL0Debugger {
 	 * @param offset
 	 *            offset from base
 	 * @return StackItem on level and offset
+	 * @throws MyException 
 	 */
-	private TreeItem<StackItem> getItemOnLevel(int level, int offset) {
+	private TreeItem<StackItem> getItemOnLevel(int level, int offset) throws MyException {
+		if (level < 0 || offset < 0) {
+			throw new MyException(ExceptionEnum.NEGATIVE);
+		}
 		log.info("Getting item on level: " + level + " and offset: " + offset);
-		TreeItem<StackItem> newBase = this.getBase(level);
-		TreeItem<StackItem> oldItem = newBase.getChildren().get(offset - 1);
-		TreeItem<StackItem> newItem = new TreeItem<StackItem>(
-				new StackItem(oldItem.getValue().getIndex(), oldItem.getValue().getValue()));
-		return newItem;
+		try {
+			TreeItem<StackItem> newBase = this.getBase(level);
+			TreeItem<StackItem> oldItem = newBase.getChildren().get(offset - 1);
+			TreeItem<StackItem> newItem = new TreeItem<StackItem>(
+					new StackItem(oldItem.getValue().getIndex(), oldItem.getValue().getValue()));
+			return newItem;
+		} catch (Exception e){
+			throw new MyException(ExceptionEnum.OVERFLOW);
+		}
+		
 	}
 
 	/**
@@ -872,12 +912,20 @@ public class PL0Debugger {
 	 *            offset from base
 	 * @param item
 	 *            StackItem to modify
+	 * @throws MyException 
 	 */
-	private void setItemOnLevel(int level, int offset, TreeItem<StackItem> item) {
+	private void setItemOnLevel(int level, int offset, TreeItem<StackItem> item) throws MyException {
+		if (level < 0 || offset < 0) {
+			throw new MyException(ExceptionEnum.NEGATIVE);
+		}
 		log.info("Setting item on level: " + level + " and offset: " + offset + ", item: " + item);
-		TreeItem<StackItem> newBase = this.getBase(level);
-		item.getValue().setIndex(newBase.getValue().getIndex() + offset);
-		newBase.getChildren().set(offset - 1, item);
+		try {
+			TreeItem<StackItem> newBase = this.getBase(level);
+			item.getValue().setIndex(newBase.getValue().getIndex() + offset);
+			newBase.getChildren().set(offset - 1, item);
+		} catch (Exception e) {
+			throw new MyException(ExceptionEnum.OVERFLOW);
+		}
 	}
 
 	/**

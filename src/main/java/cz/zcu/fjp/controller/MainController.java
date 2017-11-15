@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import cz.zcu.fjp.model.ExceptionEnum;
 import cz.zcu.fjp.model.Heap;
 import cz.zcu.fjp.model.Instruction;
+import cz.zcu.fjp.model.MyException;
 import cz.zcu.fjp.model.Stack;
 import cz.zcu.fjp.model.StackItem;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -171,9 +172,10 @@ public class MainController implements Initializable {
 	 * alert, else initalize table.
 	 * 
 	 * @param event
+	 * @throws MyException 
 	 */
 	@FXML
-	void loadFile(ActionEvent event) {
+	void loadFile(ActionEvent event) throws MyException {
 		file = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
 		if (file != null) {
 			instructions = fr.getTable(file);
@@ -203,9 +205,10 @@ public class MainController implements Initializable {
 	 * Reset table to first instruction.
 	 * 
 	 * @param event
+	 * @throws MyException 
 	 */
 	@FXML
-	void reset(ActionEvent event) {
+	void reset(ActionEvent event) throws MyException {
 		resetStackView();
 
 		for (Instruction i : instructions) {
@@ -228,9 +231,10 @@ public class MainController implements Initializable {
 	 * Select next row in program instruction table.
 	 * 
 	 * @param event
+	 * @throws MyException 
 	 */
 	@FXML
-	void stepForward(ActionEvent event) {
+	void stepForward(ActionEvent event) throws MyException {
 		Stack futureStack = null;
 		Instruction now = future;
 
