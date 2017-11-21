@@ -1,5 +1,8 @@
 package cz.zcu.fjp.model;
 
+/**
+ * Enumeration representing individual errors that can occur during execution
+ */
 public enum ExceptionEnum {
 	UNKNOWN_INST("This instruction does not exist or is not implemented for given parameters"),
 	WRONG_ARG("Argument for given operation cannot be proccessed"),

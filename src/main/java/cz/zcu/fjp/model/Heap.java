@@ -2,6 +2,9 @@ package cz.zcu.fjp.model;
 
 import javafx.beans.property.SimpleIntegerProperty;
 
+/**
+ * Class representing Heap item (index and value in list)
+ */
 public class Heap {
 
 	private SimpleIntegerProperty index = new SimpleIntegerProperty();

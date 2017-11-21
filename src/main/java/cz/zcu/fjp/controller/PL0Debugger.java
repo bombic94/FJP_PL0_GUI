@@ -972,6 +972,12 @@ public class PL0Debugger {
 		return newIndex;
 	}
 
+	/**
+	 * Create list of heap items from simple int list
+	 * and return for showing in heapTable
+	 * 
+	 * @return list of heap items
+	 */
 	public ObservableList<Heap> getHeap() {
 		heap = FXCollections.observableArrayList();
 		for (int i = 0; i < heapList.size(); i++) {

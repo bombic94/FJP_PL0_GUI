@@ -316,6 +316,12 @@ public class MainController implements Initializable {
 		pl0.nullStack();
 	}
 
+	/**
+	 * Create alert popup window informing about error
+	 * 
+	 * @param error 
+	 * 			Error that happend during execution
+	 */
 	public void alert(ExceptionEnum error) {
 		btnForward.setDisable(true);
 

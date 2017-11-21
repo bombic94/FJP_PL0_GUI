@@ -3,6 +3,9 @@ package cz.zcu.fjp.model;
 import cz.zcu.fjp.controller.MainController;
 import cz.zcu.fjp.controller.PL0Debugger;
 
+/**
+ * MyException calls controller to popup new alert window with occurred error
+ */
 public class MyException extends Exception {
 
 	private PL0Debugger pl0 = PL0Debugger.getInstance();
