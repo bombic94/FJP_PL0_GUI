@@ -174,7 +174,9 @@ public class MainController implements Initializable {
 	 * alert, else initalize table.
 	 * 
 	 * @param event
+	 *            Pressed button
 	 * @throws MyException
+	 *             Bad format of file
 	 */
 	@FXML
 	void loadFile(ActionEvent event) throws MyException {
@@ -207,7 +209,9 @@ public class MainController implements Initializable {
 	 * Reset table to first instruction.
 	 * 
 	 * @param event
+	 *            Pressed button
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	@FXML
 	void reset(ActionEvent event) throws MyException {
@@ -233,7 +237,9 @@ public class MainController implements Initializable {
 	 * Select next row in program instruction table.
 	 * 
 	 * @param event
+	 *            Pressed button
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	@FXML
 	void stepForward(ActionEvent event) throws MyException {

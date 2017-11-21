@@ -78,6 +78,7 @@ public class PL0Debugger {
 	 * 
 	 * @return Future instruction
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	public Instruction getFutureInstruction(Instruction actual, ObservableList<Instruction> instructions)
 			throws MyException {
@@ -783,6 +784,7 @@ public class PL0Debugger {
 	 * 
 	 * @return Base TreeItem
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	private TreeItem<StackItem> findBaseOnIndex(int index) throws MyException {
 		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
@@ -802,6 +804,7 @@ public class PL0Debugger {
 	 * 
 	 * @return list of StackItems on given level
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	private ObservableList<TreeItem<StackItem>> getActualList() throws MyException {
 		log.info("Getting actual list");
@@ -890,6 +893,7 @@ public class PL0Debugger {
 	 *            number of levels up
 	 * @return Base item
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	private TreeItem<StackItem> getBase(int level) throws MyException {
 		if (level < 0) {
@@ -916,6 +920,7 @@ public class PL0Debugger {
 	 *            offset from base
 	 * @return StackItem on level and offset
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	private TreeItem<StackItem> getItemOnLevel(int level, int offset) throws MyException {
 		if (level < 0 || offset < 0) {
@@ -944,6 +949,7 @@ public class PL0Debugger {
 	 * @param item
 	 *            StackItem to modify
 	 * @throws MyException
+	 *             Exception occurred during process
 	 */
 	private void setItemOnLevel(int level, int offset, TreeItem<StackItem> item) throws MyException {
 		if (level < 0 || offset < 0) {

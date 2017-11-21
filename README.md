@@ -1,7 +1,8 @@
-# FJP_PL0_GUI
+# PL/0 interpreter
 
+### Version: 1.0.1
 Simple PL/0 interpreter with GUI in JavaFX.
-Made as project at University of West Bohemia in 2017.
+Made as project at University of West Bohemia in 2017. (KIV/FJP)
 
 Interpreter enables to simulate flow of PL/0 program. 
 User can observe list of instructions, list of values in stack and registers: Program Counter, Base and Stack-Top Pointer.
