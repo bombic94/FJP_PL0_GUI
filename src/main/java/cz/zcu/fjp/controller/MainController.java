@@ -319,8 +319,8 @@ public class MainController implements Initializable {
 	/**
 	 * Create alert popup window informing about error
 	 * 
-	 * @param error 
-	 * 			Error that happend during execution
+	 * @param error
+	 *            Error that happend during execution
 	 */
 	public void alert(ExceptionEnum error) {
 		btnForward.setDisable(true);

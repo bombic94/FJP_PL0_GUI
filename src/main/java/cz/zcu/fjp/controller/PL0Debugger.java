@@ -973,8 +973,8 @@ public class PL0Debugger {
 	}
 
 	/**
-	 * Create list of heap items from simple int list
-	 * and return for showing in heapTable
+	 * Create list of heap items from simple int list and return for showing in
+	 * heapTable
 	 * 
 	 * @return list of heap items
 	 */
