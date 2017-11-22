@@ -788,9 +788,6 @@ public class PL0Debugger {
 	 */
 	private TreeItem<StackItem> findBaseOnIndex(int index) throws MyException {
 		ObservableList<TreeItem<StackItem>> list = stack.getRoot().getChildren();
-		if (index >= list.size()) {
-			throw new MyException(ExceptionEnum.OVERFLOW);
-		}
 		for (TreeItem<StackItem> item : list) {
 			if (item.getValue().getIndex() == index) {
 				return item;
