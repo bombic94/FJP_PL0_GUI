@@ -1,6 +1,6 @@
 # PL/0 interpreter
 
-### Version: 1.0.1
+### Version: 1.0.2
 Simple PL/0 interpreter with GUI in JavaFX.
 Made as project at University of West Bohemia in 2017. (KIV/FJP)
 

@@ -968,11 +968,17 @@ public class PL0Debugger {
 	 * @param stackItems
 	 *            list of items
 	 * @return stackItem last item
+	 * @throws MyException 
+	 *             Exception occurred during process
 	 */
-	private int getNewIndex(ObservableList<TreeItem<StackItem>> stackItems) {
-		int newIndex = stackItems.get(stackItems.size() - 1).getValue().getIndex() + 1;
-		log.info("Getting new index for new item: " + newIndex);
-		return newIndex;
+	private int getNewIndex(ObservableList<TreeItem<StackItem>> stackItems) throws MyException {
+		if (stackItems.size() > 1) {
+			int newIndex = stackItems.get(stackItems.size() - 1).getValue().getIndex() + 1;
+			log.info("Getting new index for new item: " + newIndex);
+			return newIndex;
+		} else {
+			throw new MyException(ExceptionEnum.ACTIVATION);
+		}	
 	}
 
 	/**
